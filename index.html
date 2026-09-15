@@ -85,8 +85,9 @@ h2{font-size:11.5px;color:#6a6a72;text-transform:uppercase;letter-spacing:.7px;
 <div id="pNew" class="panel">
   <div class="top"><div class="back" onclick="go('pHome')">‹</div><h1>Novo evento</h1></div>
   <input id="evName" placeholder="Local (ex. Salão Vista Verde)" autocomplete="off">
-  <button class="go" onclick="createEvent()">Criar</button>
+  <button class="go" id="createBtn">Criar</button>
   <button class="ghost" onclick="go('pHome')">Cancelar</button>
+  <div class="note" id="errBox" style="color:#f77"></div>
 </div>
 
 <!-- ================= EVENTO ================= -->
@@ -296,18 +297,36 @@ function renderEvents(){
 function esc(s){return String(s).replace(/[<>&"]/g,c=>
   ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
 
-function newEvent(){document.getElementById('evName').value='';go('pNew')}
+function newEvent(){
+  document.getElementById('evName').value='';
+  document.getElementById('errBox').textContent='';
+  go('pNew');
+}
 
 function createEvent(){
-  const n=document.getElementById('evName').value.trim();
-  if(!n){document.getElementById('evName').focus();return}
-  const d=new Date();
-  events.unshift({name:n,
-    date:String(d.getDate()).padStart(2,'0')+'/'+
-         String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(),
-    meas:[]});
-  save();renderEvents();openEvent(0);
+  try{
+    const inp=document.getElementById('evName');
+    const d=new Date();
+    const dstr=String(d.getDate()).padStart(2,'0')+'/'+
+               String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+    const n=(inp.value||'').trim()||('Evento '+dstr);
+    inp.blur();
+    events.unshift({name:n,date:dstr,meas:[]});
+    save();renderEvents();openEvent(0);
+  }catch(err){
+    document.getElementById('errBox').textContent='Erro: '+err.message;
+  }
 }
+
+// no iOS o primeiro toque so fecha o teclado; touchend garante o disparo
+(function(){
+  const b=document.getElementById('createBtn');
+  b.addEventListener('click',createEvent);
+  b.addEventListener('touchend',function(ev){ev.preventDefault();createEvent()});
+  document.getElementById('evName').addEventListener('keydown',function(ev){
+    if(ev.key==='Enter'){ev.preventDefault();createEvent()}
+  });
+})();
 
 function openEvent(i){
   curEv=i;
@@ -643,6 +662,10 @@ function saveResult(){
 }
 
 // ══════════════════════ INIT ══════════════════════
+window.addEventListener('error',function(e){
+  const b=document.getElementById('errBox');
+  if(b)b.textContent='Erro: '+e.message+' (linha '+e.lineno+')';
+});
 load();renderEvents();
 window.addEventListener('pagehide',closeMic);
 </script>
