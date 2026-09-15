@@ -334,97 +334,129 @@ const FULL={f1:200,f2:8000},SUB={f1:50,f2:120};
 // ── desenhos de posicionamento (vista de cima) ──
 const A_STAGE='<rect x="12" y="10" width="296" height="30" rx="3" fill="#191C21" stroke="#2E333D"/>'+
   '<text x="160" y="30" fill="#5A606B" font-size="11" font-family="Barlow" text-anchor="middle">PALCO</text>';
-function spk(x,y,l){return '<rect x="'+(x-13)+'" y="'+(y-9)+'" width="26" height="18" rx="2" fill="#2A2F3A" stroke="#3E4550"/>'+
-  '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#161A1F" stroke="#4A515E"/>'+
-  '<text x="'+x+'" y="'+(y+24)+'" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">'+l+'</text>'}
-function ph(x,y,lbl){return '<rect x="'+(x-8)+'" y="'+(y-14)+'" width="16" height="28" rx="3" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
-  '<circle cx="'+x+'" cy="'+(y-9)+'" r="2" fill="#FFAE22"/>'+
-  '<text x="'+x+'" y="'+(y+27)+'" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">'+(lbl||'CELULAR')+'</text>'}
+
+function spk(x,y,l){return '<rect x="'+(x-14)+'" y="'+(y-10)+'" width="28" height="20" rx="2.5" fill="#262B34" stroke="#434B58"/>'+
+  '<circle cx="'+x+'" cy="'+(y+2)+'" r="5.5" fill="#10141A" stroke="#525B69"/>'+
+  '<circle cx="'+x+'" cy="'+(y+2)+'" r="1.8" fill="#525B69"/>'+
+  '<circle cx="'+x+'" cy="'+(y-6)+'" r="2.4" fill="#10141A" stroke="#525B69"/>'+
+  (l?'<text x="'+x+'" y="'+(y+26)+'" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">'+l+'</text>':'')}
+
+// iPhone visto de frente: corpo, tela e ilha dinâmica
+function iphone(x,y,s,c){
+  s=s||1;c=c||'#FFAE22';
+  const w=19*s,h=38*s,r=5*s;
+  return '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'" rx="'+r+
+    '" fill="#15181D" stroke="'+c+'" stroke-width="1.5"/>'+
+    '<rect x="'+(x-w/2+1.8*s)+'" y="'+(y-h/2+1.8*s)+'" width="'+(w-3.6*s)+
+    '" height="'+(h-3.6*s)+'" rx="'+(r-1.5*s)+'" fill="#0A0C0E" stroke="'+c+
+    '" stroke-opacity=".3"/>'+
+    '<rect x="'+(x-3.2*s)+'" y="'+(y-h/2+3.6*s)+'" width="'+(6.4*s)+'" height="'+(2*s)+
+    '" rx="'+(s)+'" fill="'+c+'" fill-opacity=".6"/>';
+}
+
+function ph(x,y,lbl){return iphone(x,y,1)+
+  '<text x="'+x+'" y="'+(y+32)+'" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">'+(lbl||'CELULAR')+'</text>'}
+
 function dash(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+
   '" stroke="#3E4550" stroke-width="1" stroke-dasharray="4 4"/>'}
 function svg(inner,h){return '<svg viewBox="0 0 320 '+(h||190)+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>'}
 
 const SCEN={
-  pa_torre:{t:'PA e torre de delay',
-    d:'A torre precisa esperar o som do PA chegar',
-    a:'PA principal',b:'Torre de delay',ba:FULL,bb:FULL,
+  pa_torre:{t:'PA e delay',
+    d:'O delay precisa esperar o som do PA chegar',
+    a:'PA principal',b:'Delay',ba:FULL,bb:FULL,
     pos:'Fique na zona de cruzamento',
-    posd:'Vá até onde o som do PA e o da torre chegam com força parecida — normalmente alguns metros antes da torre. Mic do celular apontado para o palco.',
-    art:svg(A_STAGE+spk(60,55,'PA L')+spk(260,55,'PA R')+
-      spk(60,150,'TORRE')+spk(260,150,'TORRE')+
-      dash(160,42,160,120)+ph(160,128))},
+    posd:'Vá até onde o som do PA e o do delay chegam com força parecida — normalmente alguns metros antes da caixa de delay. Mic do celular apontado para o palco.',
+    art:svg(A_STAGE+spk(60,58,'PA L')+spk(260,58,'PA R')+
+      spk(60,150,'DELAY')+spk(260,150,'DELAY')+
+      dash(160,42,160,116)+ph(160,126))},
   l_r:{t:'Lado L e lado R',
     d:'Confere se os dois lados chegam juntos',
     a:'Lado L',b:'Lado R',ba:FULL,bb:FULL,
     pos:'Fique no centro',
     posd:'Meça do ponto exatamente entre as duas caixas. Se estiver fora do eixo, o valor vale só para essa posição.',
-    art:svg(A_STAGE+spk(50,70,'L')+spk(270,70,'R')+
-      dash(50,70,160,130)+dash(270,70,160,130)+ph(160,140))},
+    art:svg(A_STAGE+spk(50,72,'L')+spk(270,72,'R')+
+      dash(50,80,160,126)+dash(270,80,160,126)+ph(160,136))},
   sub_top:{t:'Sub e top',
     d:'O alinhamento que mais gente erra',
     a:'Top',b:'Sub',ba:FULL,bb:SUB,
     pos:'Fique no eixo, à mesma distância',
     posd:'Alinhado com a pilha, a uns 3 metros. O sub é medido em faixa estreita, então precisa de nível alto.',
-    art:svg(A_STAGE+spk(160,62,'TOP')+spk(160,108,'SUB')+
-      dash(160,120,160,150)+ph(160,158))},
+    art:svg(A_STAGE+spk(160,64,'TOP')+spk(160,110,'SUB')+
+      dash(160,122,160,142)+ph(160,152),200)},
   front_pa:{t:'PA e front fill',
     d:'Para a primeira fila não ouvir dobrado',
     a:'PA principal',b:'Front fill',ba:FULL,bb:FULL,
     pos:'Fique na primeira fila',
     posd:'No ponto onde o front fill cobre e o PA ainda chega. Celular na altura da cabeça de quem vai ficar ali.',
-    art:svg(A_STAGE+spk(55,62,'PA L')+spk(265,62,'PA R')+
-      spk(160,48,'FRONT')+dash(160,60,160,120)+ph(160,130))},
+    art:svg(A_STAGE+spk(55,68,'PA L')+spk(265,68,'PA R')+
+      spk(160,52,'FRONT')+dash(160,64,160,116)+ph(160,126))},
   custom:{t:'Duas fontes quaisquer',
     d:'Você escolhe o que comparar',
     a:'Fonte A',b:'Fonte B',ba:FULL,bb:FULL,
     pos:'Escolha um ponto e não saia dele',
     posd:'Meça as duas fontes do mesmo lugar, sem mover o celular entre elas. É a única regra que não dá para quebrar.',
-    art:svg(spk(60,60,'FONTE A')+spk(260,60,'FONTE B')+
-      dash(60,60,160,120)+dash(260,60,160,120)+ph(160,130),175)}
+    art:svg(spk(60,48,'FONTE A')+spk(260,48,'FONTE B')+
+      dash(60,58,160,104)+dash(260,58,160,104)+ph(160,114),160)}
 };
 
 // ── tutorial ──
 const TUT=[
  {t:'Ligue o celular no console',
   d:'Adaptador Lightning para P2, saída do celular na entrada de um canal. É por aí que o sinal de teste entra no sistema. Sem cabo também funciona, mirando o alto-falante do celular num mic aberto, mas com menos nível.',
-  art:svg('<rect x="28" y="62" width="52" height="86" rx="7" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
-    '<circle cx="54" cy="78" r="3" fill="#FFAE22"/>'+
-    '<text x="54" y="164" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">CELULAR</text>'+
-    '<path d="M80 105 H150" stroke="#FFAE22" stroke-width="2"/>'+
-    '<circle cx="152" cy="105" r="4" fill="#FFAE22"/>'+
-    '<text x="115" y="96" fill="#878C96" font-size="10" font-family="Barlow" text-anchor="middle">Lightning → P2</text>'+
-    '<rect x="168" y="58" width="124" height="94" rx="4" fill="#191C21" stroke="#2E333D"/>'+
-    '<rect x="178" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
-    '<rect x="198" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
-    '<rect x="218" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
-    '<rect x="238" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
-    '<rect x="258" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
-    '<text x="230" y="164" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">CONSOLE</text>',180)},
+  art:svg(iphone(52,100,1.9)+
+    '<text x="52" y="168" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">iPHONE</text>'+
+    '<path d="M72 118 Q104 132 140 118" fill="none" stroke="#FFAE22" stroke-width="2"/>'+
+    '<rect x="138" y="112" width="7" height="12" rx="2" fill="#FFAE22"/>'+
+    '<text x="106" y="150" fill="#878C96" font-size="10" font-family="Barlow" text-anchor="middle">Lightning → P2</text>'+
+    '<rect x="160" y="50" width="142" height="96" rx="5" fill="#191C21" stroke="#2E333D"/>'+
+    '<rect x="170" y="58" width="122" height="20" rx="2" fill="#10141A"/>'+
+    '<circle cx="182" cy="68" r="3" fill="#3CCB7F"/>'+
+    '<circle cx="196" cy="68" r="3" fill="#2E333D"/>'+
+    '<circle cx="210" cy="68" r="3" fill="#2E333D"/>'+
+    '<rect x="172" y="86" width="15" height="52" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<rect x="174" y="100" width="11" height="5" rx="2" fill="#FFAE22"/>'+
+    '<rect x="194" y="86" width="15" height="52" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<rect x="196" y="112" width="11" height="5" rx="2" fill="#5A606B"/>'+
+    '<rect x="216" y="86" width="15" height="52" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<rect x="218" y="106" width="11" height="5" rx="2" fill="#5A606B"/>'+
+    '<rect x="238" y="86" width="15" height="52" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<rect x="240" y="118" width="11" height="5" rx="2" fill="#5A606B"/>'+
+    '<rect x="260" y="86" width="15" height="52" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<rect x="262" y="98" width="11" height="5" rx="2" fill="#5A606B"/>'+
+    '<text x="231" y="168" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">CONSOLE</text>',180)},
+
  {t:'Apoie numa superfície firme',
   d:'Mesa, case, caixa de cabo. Não segure na mão — 30 cm de movimento já erram quase 1 ms. O app trava a captura se detectar que o celular mexeu.',
-  art:svg('<rect x="40" y="112" width="240" height="9" rx="2" fill="#2A2F3A"/>'+
-    '<rect x="132" y="70" width="36" height="42" rx="4" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
-    '<circle cx="150" cy="80" r="3" fill="#FFAE22"/>'+
-    '<path d="M150 58 V44" stroke="#FFAE22" stroke-width="1.5"/>'+
-    '<path d="M143 51 L150 44 L157 51" fill="none" stroke="#FFAE22" stroke-width="1.5"/>'+
-    '<text x="150" y="36" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">MIC PARA O SISTEMA</text>'+
-    '<text x="150" y="140" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">MESA OU CASE</text>',160)},
+  art:svg('<path d="M160 52 V32" stroke="#FFAE22" stroke-width="1.6"/>'+
+    '<path d="M153 39 L160 32 L167 39" fill="none" stroke="#FFAE22" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<text x="160" y="24" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">MIC PARA O SISTEMA</text>'+
+    iphone(160,86,1.75)+
+    '<circle cx="160" cy="120" r="2.6" fill="#FFAE22"/>'+
+    '<rect x="66" y="126" width="188" height="8" rx="2" fill="#262B34" stroke="#3A414D"/>'+
+    '<text x="160" y="154" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">MESA OU CASE</text>',168)},
+
  {t:'Meça uma fonte de cada vez',
   d:'Ligue só a primeira e meça. Depois só a segunda e meça. O app subtrai os dois tempos — é isso que cancela a latência do celular e entrega o número certo.',
-  art:svg('<rect x="18" y="38" width="130" height="104" rx="5" fill="#191C21" stroke="#3CCB7F"/>'+
-    '<text x="83" y="64" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">1 · SÓ O PA</text>'+
-    spk(83,92,'')+
-    '<text x="83" y="126" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">a torre desligada</text>'+
-    '<rect x="172" y="38" width="130" height="104" rx="5" fill="#191C21" stroke="#3CCB7F"/>'+
-    '<text x="237" y="64" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">2 · SÓ A TORRE</text>'+
-    spk(237,92,'')+
-    '<text x="237" y="126" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">o PA desligado</text>',160)},
+  art:svg('<rect x="16" y="26" width="134" height="112" rx="6" fill="#141820" stroke="#2E5F45"/>'+
+    '<text x="83" y="48" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">1 · SÓ O PA</text>'+
+    spk(83,82,'')+
+    '<text x="83" y="122" fill="#5A606B" font-size="10.5" font-family="Barlow" text-anchor="middle">delay desligado</text>'+
+    '<rect x="170" y="26" width="134" height="112" rx="6" fill="#141820" stroke="#2E5F45"/>'+
+    '<text x="237" y="48" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">2 · SÓ O DELAY</text>'+
+    spk(237,82,'')+
+    '<text x="237" y="122" fill="#5A606B" font-size="10.5" font-family="Barlow" text-anchor="middle">PA desligado</text>',155)},
+
  {t:'Sem Bluetooth, volume no máximo',
   d:'Fone ou caixa Bluetooth adiciona atraso que muda sozinho e estraga a conta. Desconecte tudo antes de começar.',
-  art:svg('<circle cx="160" cy="88" r="46" fill="none" stroke="#E5484D" stroke-width="2"/>'+
-    '<path d="M128 56 L192 120" stroke="#E5484D" stroke-width="2"/>'+
-    '<path d="M150 66 L172 84 L160 94 V62 L172 72 L150 90" fill="none" stroke="#878C96" stroke-width="2" stroke-linejoin="round"/>'+
-    '<text x="160" y="158" fill="#878C96" font-size="11" font-family="Barlow" text-anchor="middle">BLUETOOTH DESCONECTADO</text>',175)}
+  art:svg('<g transform="translate(160 84)">'+
+    '<circle r="44" fill="none" stroke="#E5484D" stroke-width="2.5"/>'+
+    '<g transform="translate(-24 -24) scale(2)">'+
+    '<path d="M6.5 8.5 L17.5 15.5 L12 20 V4 L17.5 8.5 L6.5 15.5" fill="none" '+
+    'stroke="#9AA0AA" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></g>'+
+    '<line x1="-31" y1="-31" x2="31" y2="31" stroke="#E5484D" stroke-width="2.5" stroke-linecap="round"/>'+
+    '</g>'+
+    '<text x="160" y="156" fill="#878C96" font-size="11" font-family="Barlow" text-anchor="middle">DESCONECTE FONES E CAIXAS</text>',172)}
 ];
 
 // ══════════════════════ ESTADO ══════════════════════
