@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Delay</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none}
+body{margin:0;padding:env(safe-area-inset-top) 16px 40px;
+ font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+ background:#0d0d0f;color:#f0f0f2;line-height:1.45;overscroll-behavior:none}
+.top{display:flex;align-items:center;gap:12px;padding:16px 0 18px}
+.back{width:34px;height:34px;border-radius:9px;background:#1e1e22;
+ display:flex;align-items:center;justify-content:center;font-size:19px;color:#999}
+h1{font-size:21px;margin:0;font-weight:700;letter-spacing:-.3px}
+.sub{font-size:13px;color:#7a7a82;margin:-12px 0 20px}
+button{width:100%;padding:17px;font-size:16px;font-weight:600;border:0;
+ border-radius:13px;background:#1e1e22;color:#f0f0f2;margin-bottom:9px;
+ display:block;text-align:left}
+button.go{background:#00c07f;color:#04241a;text-align:center;font-size:17px}
+button.go:disabled{background:#1e1e22;color:#55555c}
+button.ghost{background:transparent;border:1px solid #2a2a30;color:#9a9aa2;
+ text-align:center;font-size:14px;padding:13px}
+button.danger{background:transparent;color:#d85;text-align:center;font-size:14px;padding:12px}
+.panel{display:none}.panel.on{display:block}
+.card{background:#16161a;border:1px solid #232329;border-radius:14px;
+ padding:15px;margin-bottom:10px}
+.card .t{font-size:15px;font-weight:600}
+.card .d{font-size:12.5px;color:#7a7a82;margin-top:3px}
+.pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;
+ background:#232329;color:#9a9aa2;margin-top:8px;font-weight:600}
+.pill.ok{background:#0b3d2b;color:#2ddc9a}
+.pill.no{background:#3d1a1a;color:#f77}
+.hero{text-align:center;padding:30px 16px;background:#16161a;
+ border:1px solid #232329;border-radius:16px;margin-bottom:12px}
+.hero .n{font-size:58px;font-weight:800;letter-spacing:-2px;line-height:1;
+ font-variant-numeric:tabular-nums}
+.hero .n small{font-size:22px;font-weight:600;color:#7a7a82;margin-left:4px}
+.hero .c{font-size:14px;color:#9a9aa2;margin-top:10px}
+.hero .x{font-size:12.5px;color:#6a6a72;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:#16161a;border:1px solid #232329;border-radius:11px;padding:11px 13px}
+.stat .k{font-size:10.5px;color:#6a6a72;text-transform:uppercase;letter-spacing:.5px}
+.stat .v{font-size:18px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat.bad .v{color:#f77}
+.src{background:#16161a;border:1px solid #232329;border-radius:14px;
+ padding:16px;margin-bottom:10px}
+.src.done{border-color:#00c07f44;background:#0d2620}
+.src .h{display:flex;justify-content:space-between;align-items:center}
+.src .n{font-size:16px;font-weight:700}
+.src .r{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.src .m{font-size:12.5px;color:#7a7a82;margin-top:4px}
+.warn{background:#2a1f0b;border:1px solid #5a4415;border-radius:12px;
+ padding:13px;font-size:13px;color:#e8c46a;margin-bottom:12px}
+.note{font-size:12.5px;color:#6a6a72;margin-top:18px}
+input{width:100%;padding:15px;font-size:16px;background:#16161a;
+ border:1px solid #2a2a30;border-radius:12px;color:#f0f0f2;margin-bottom:10px;
+ -webkit-user-select:text;user-select:text}
+.bar{height:5px;background:#232329;border-radius:3px;overflow:hidden;margin:14px 0 4px}
+.bar i{display:block;height:100%;background:#00c07f;width:0%;transition:width .2s}
+.big-status{text-align:center;padding:28px 16px;font-size:16px;color:#9a9aa2}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;
+ background:#00c07f;margin-right:7px;animation:p 1s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+h2{font-size:11.5px;color:#6a6a72;text-transform:uppercase;letter-spacing:.7px;
+ margin:24px 0 9px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ================= EVENTOS ================= -->
+<div id="pHome" class="panel on">
+  <div class="top"><h1>Delay</h1></div>
+  <button class="go" onclick="newEvent()">Novo evento</button>
+  <h2>Eventos</h2>
+  <div id="evList"></div>
+  <div class="note">Cada evento guarda as medições daquele local. O microfone
+  fica aberto durante toda a sessão — é isso que faz a conta fechar.</div>
+</div>
+
+<!-- ================= NOVO EVENTO ================= -->
+<div id="pNew" class="panel">
+  <div class="top"><div class="back" onclick="go('pHome')">‹</div><h1>Novo evento</h1></div>
+  <input id="evName" placeholder="Local (ex. Salão Vista Verde)" autocomplete="off">
+  <button class="go" onclick="createEvent()">Criar</button>
+  <button class="ghost" onclick="go('pHome')">Cancelar</button>
+</div>
+
+<!-- ================= EVENTO ================= -->
+<div id="pEvent" class="panel">
+  <div class="top"><div class="back" onclick="go('pHome')">‹</div><h1 id="evTitle">Evento</h1></div>
+  <h2>Nova medição</h2>
+  <div id="scenList"></div>
+  <h2>Medições deste evento</h2>
+  <div id="mList"></div>
+  <button class="danger" onclick="deleteEvent()">Apagar evento</button>
+</div>
+
+<!-- ================= MEDIÇÃO ================= -->
+<div id="pMeas" class="panel">
+  <div class="top"><div class="back" onclick="abortMeas()">‹</div><h1 id="mTitle">Medição</h1></div>
+
+  <div class="warn" id="mWarn">
+    Desconecte fones e caixas Bluetooth. Apoie o celular numa superfície firme
+    e não mexa durante a captura.
+  </div>
+
+  <div class="src" id="srcA">
+    <div class="h"><div class="n" id="nameA">Fonte A</div><div class="r" id="resA">—</div></div>
+    <div class="m" id="msgA">Toque para medir</div>
+  </div>
+
+  <div class="src" id="srcB">
+    <div class="h"><div class="n" id="nameB">Fonte B</div><div class="r" id="resB">—</div></div>
+    <div class="m" id="msgB">Toque para medir</div>
+  </div>
+
+  <div class="bar"><i id="prog"></i></div>
+  <div class="big-status" id="mStatus">Ligue só a primeira fonte e toque nela acima.</div>
+
+  <button class="go" id="calcBtn" disabled onclick="finishMeas()">Calcular delay</button>
+  <button class="ghost" onclick="abortMeas()">Cancelar</button>
+</div>
+
+<!-- ================= RESULTADO ================= -->
+<div id="pRes" class="panel">
+  <div class="top"><h1>Resultado</h1></div>
+  <div class="hero">
+    <div class="n" id="rMs">—<small>ms</small></div>
+    <div class="c" id="rApply">—</div>
+    <div class="x" id="rEquiv">—</div>
+  </div>
+  <div class="grid2">
+    <div class="stat" id="sA"><div class="k">Fonte A</div><div class="v">—</div></div>
+    <div class="stat" id="sB"><div class="k">Fonte B</div><div class="v">—</div></div>
+    <div class="stat" id="sConf"><div class="k">Confiança</div><div class="v">—</div></div>
+    <div class="stat" id="sSpread"><div class="k">Dispersão</div><div class="v">—</div></div>
+  </div>
+  <div class="warn" id="rWarn" style="display:none"></div>
+  <button class="go" onclick="saveResult()">Salvar no evento</button>
+  <button class="ghost" onclick="go('pEvent')">Descartar</button>
+  <div class="note" id="rNote"></div>
+</div>
+
+<script>
+// ══════════════════════ DSP ══════════════════════
+function nextPow2(n){let p=1;while(p<n)p<<=1;return p}
+
+function fft(re,im,inv){
+  const n=re.length;if(n<=1)return;
+  for(let i=1,j=0;i<n;i++){
+    let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;
+    if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}
+  }
+  for(let len=2;len<=n;len<<=1){
+    const a=(inv?2:-2)*Math.PI/len,wR=Math.cos(a),wI=Math.sin(a);
+    for(let i=0;i<n;i+=len){
+      let cR=1,cI=0;
+      for(let k=0;k<len/2;k++){
+        const uR=re[i+k],uI=im[i+k];
+        const vR=re[i+k+len/2]*cR-im[i+k+len/2]*cI;
+        const vI=re[i+k+len/2]*cI+im[i+k+len/2]*cR;
+        re[i+k]=uR+vR;im[i+k]=uI+vI;
+        re[i+k+len/2]=uR-vR;im[i+k+len/2]=uI-vI;
+        const nR=cR*wR-cI*wI;cI=cR*wI+cI*wR;cR=nR;
+      }
+    }
+  }
+  if(inv)for(let i=0;i<n;i++){re[i]/=n;im[i]/=n}
+}
+
+function logSweep(fs,dur,f1,f2){
+  const n=Math.round(fs*dur),o=new Float32Array(n);
+  const K=(dur*2*Math.PI*f1)/Math.log(f2/f1),L=Math.log(f2/f1)/dur;
+  for(let i=0;i<n;i++)o[i]=Math.sin(K*(Math.exp((i/fs)*L)-1));
+  const f=Math.round(fs*0.012);
+  for(let i=0;i<f;i++){const w=.5*(1-Math.cos(Math.PI*i/f));o[i]*=w;o[n-1-i]*=w}
+  return o;
+}
+
+function bandpass(sig,fs,f1,f2,passes){
+  let d=Float32Array.from(sig);
+  const fc=Math.sqrt(f1*f2),bw=Math.log2(f2/f1),w0=2*Math.PI*fc/fs;
+  const al=Math.sin(w0)*Math.sinh((Math.log(2)/2)*bw*(w0/Math.sin(w0)));
+  const a0=1+al,b0=al/a0,b2=-al/a0,a1=(-2*Math.cos(w0))/a0,a2=(1-al)/a0;
+  for(let p=0;p<passes;p++){
+    let x1=0,x2=0,y1=0,y2=0;const o=new Float32Array(d.length);
+    for(let i=0;i<d.length;i++){
+      const x0=d[i],y0=b0*x0+b2*x2-a1*y1-a2*y2;
+      o[i]=y0;x2=x1;x1=x0;y2=y1;y1=y0;
+    }
+    d=o;
+  }
+  return d;
+}
+
+function crossCorr(ref,rec){
+  const n=nextPow2(ref.length+rec.length);
+  const aR=new Float64Array(n),aI=new Float64Array(n);
+  const bR=new Float64Array(n),bI=new Float64Array(n);
+  for(let i=0;i<ref.length;i++)aR[i]=ref[i];
+  for(let i=0;i<rec.length;i++)bR[i]=rec[i];
+  fft(aR,aI,false);fft(bR,bI,false);
+  const cR=new Float64Array(n),cI=new Float64Array(n);
+  for(let i=0;i<n;i++){
+    cR[i]=aR[i]*bR[i]+aI[i]*bI[i];
+    cI[i]=aR[i]*bI[i]-aI[i]*bR[i];
+  }
+  fft(cR,cI,true);return cR;
+}
+
+function envelope(sig){
+  const n=nextPow2(sig.length);
+  const re=new Float64Array(n),im=new Float64Array(n);
+  for(let i=0;i<sig.length;i++)re[i]=sig[i];
+  fft(re,im,false);
+  const h=n/2;
+  for(let i=1;i<h;i++){re[i]*=2;im[i]*=2}
+  for(let i=h+1;i<n;i++){re[i]=0;im[i]=0}
+  fft(re,im,true);
+  const e=new Float64Array(sig.length);
+  for(let i=0;i<sig.length;i++)e[i]=Math.hypot(re[i],im[i]);
+  return e;
+}
+
+function refine(a,i){
+  if(i<=0||i>=a.length-1)return i;
+  const y0=a[i-1],y1=a[i],y2=a[i+1],d=y0-2*y1+y2;
+  return d===0?i:i+.5*(y0-y2)/d;
+}
+
+function median(arr){
+  const s=[...arr].sort((a,b)=>a-b),m=s.length>>1;
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;
+}
+
+// ══════════════════════ CONFIG ══════════════════════
+const SOUND=343, PASSES=4, SWEEP_D=1.2;
+const BAND_FULL={f1:200,f2:8000}, BAND_SUB={f1:50,f2:120};
+const CONF_MIN=14;
+
+const SCENARIOS={
+  pa_torre:{t:'PA × Torre de delay',
+    d:'Fique na zona de cruzamento, perto da torre',
+    a:'PA principal',b:'Torre de delay',ba:BAND_FULL,bb:BAND_FULL},
+  l_r:{t:'Lado L × Lado R',
+    d:'Fique no centro, à mesma distância dos dois',
+    a:'Lado L',b:'Lado R',ba:BAND_FULL,bb:BAND_FULL},
+  sub_top:{t:'Sub × Top',
+    d:'Fique no eixo, à mesma distância das duas',
+    a:'Top',b:'Sub',ba:BAND_FULL,bb:BAND_SUB},
+  front_pa:{t:'PA × Front fill',
+    d:'Fique na primeira fila, na zona do front',
+    a:'PA principal',b:'Front fill',ba:BAND_FULL,bb:BAND_FULL},
+  custom:{t:'Personalizado',
+    d:'Duas fontes quaisquer, medidas do mesmo ponto',
+    a:'Fonte A',b:'Fonte B',ba:BAND_FULL,bb:BAND_FULL}
+};
+
+// ══════════════════════ ESTADO ══════════════════════
+let events=[], curEv=null, curScen=null;
+let resA=null, resB=null, curResult=null;
+
+function load(){
+  try{
+    const raw=localStorage.getItem('delay_events');
+    events=raw?JSON.parse(raw):[];
+  }catch(e){events=[]}
+}
+function save(){
+  try{localStorage.setItem('delay_events',JSON.stringify(events))}catch(e){}
+}
+
+function go(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════ TELAS ══════════════════════
+function renderEvents(){
+  const el=document.getElementById('evList');
+  if(!events.length){
+    el.innerHTML='<div class="card"><div class="d">Nenhum evento ainda.</div></div>';
+    return;
+  }
+  el.innerHTML=events.map((e,i)=>
+    '<div class="card" onclick="openEvent('+i+')"><div class="t">'+esc(e.name)+
+    '</div><div class="d">'+e.date+' · '+e.meas.length+' medição'+
+    (e.meas.length===1?'':'ões')+'</div></div>').join('');
+}
+
+function esc(s){return String(s).replace(/[<>&"]/g,c=>
+  ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+
+function newEvent(){document.getElementById('evName').value='';go('pNew')}
+
+function createEvent(){
+  const n=document.getElementById('evName').value.trim();
+  if(!n){document.getElementById('evName').focus();return}
+  const d=new Date();
+  events.unshift({name:n,
+    date:String(d.getDate()).padStart(2,'0')+'/'+
+         String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(),
+    meas:[]});
+  save();renderEvents();openEvent(0);
+}
+
+function openEvent(i){
+  curEv=i;
+  const e=events[i];
+  document.getElementById('evTitle').textContent=e.name;
+  document.getElementById('scenList').innerHTML=
+    Object.keys(SCENARIOS).map(k=>{
+      const s=SCENARIOS[k];
+      return '<div class="card" onclick="startMeas(\''+k+'\')"><div class="t">'+
+        s.t+'</div><div class="d">'+s.d+'</div></div>';
+    }).join('');
+  renderMeas();
+  go('pEvent');
+}
+
+function renderMeas(){
+  const e=events[curEv],el=document.getElementById('mList');
+  if(!e.meas.length){
+    el.innerHTML='<div class="card"><div class="d">Nada medido ainda.</div></div>';
+    return;
+  }
+  el.innerHTML=e.meas.map(m=>
+    '<div class="card"><div class="t">'+m.ms.toFixed(2)+' ms no '+esc(m.applyTo)+
+    '</div><div class="d">'+esc(m.scen)+' · '+m.meters.toFixed(2)+' m · '+
+    m.feet.toFixed(1)+' ft'+(m.weak?' · medição fraca':'')+'</div></div>').join('');
+}
+
+function deleteEvent(){
+  events.splice(curEv,1);save();renderEvents();go('pHome');
+}
+
+// ══════════════════════ ÁUDIO ══════════════════════
+let ctx=null,stream=null,proc=null,micNode=null;
+let ring=null,ringSize=0,writePos=0,filled=0,totalSamples=0;
+let refTime=0,refSample=0;
+let motionOK=true,motionVar=0,motionWatch=false;
+
+const RING_SEC=6;
+
+function tinyWav(){
+  const rate=44100,n=Math.round(rate*.4),bytes=44+n*2;
+  const buf=new ArrayBuffer(bytes),v=new DataView(buf);
+  const str=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+  str(0,'RIFF');v.setUint32(4,bytes-8,true);str(8,'WAVE');
+  str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);
+  v.setUint16(22,1,true);v.setUint32(24,rate,true);
+  v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+  str(36,'data');v.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.round(Math.sin(2*Math.PI*40*i/rate)*40),true);
+  let b='';const u=new Uint8Array(buf);
+  for(let i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);
+  return 'data:audio/wav;base64,'+btoa(b);
+}
+
+let unlockEl=null;
+function unlockAudio(){
+  if(!unlockEl){
+    unlockEl=document.createElement('audio');
+    unlockEl.setAttribute('playsinline','');
+    unlockEl.src=tinyWav();unlockEl.loop=true;
+    document.body.appendChild(unlockEl);
+  }
+  const p=unlockEl.play();if(p&&p.catch)p.catch(()=>{});
+}
+
+async function openMic(){
+  if(ctx)return;
+  unlockAudio();
+  stream=await navigator.mediaDevices.getUserMedia({
+    audio:{echoCancellation:false,autoGainControl:false,
+           noiseSuppression:false,channelCount:1}});
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  await ctx.resume();
+  const fs=ctx.sampleRate;
+  ringSize=Math.round(fs*RING_SEC);
+  ring=new Float32Array(ringSize);writePos=0;filled=0;totalSamples=0;
+
+  micNode=ctx.createMediaStreamSource(stream);
+  proc=ctx.createScriptProcessor(4096,1,1);
+  proc.onaudioprocess=e=>{
+    const d=e.inputBuffer.getChannelData(0);
+    for(let i=0;i<d.length;i++){ring[writePos]=d[i];writePos=(writePos+1)%ringSize}
+    totalSamples+=d.length;filled=Math.min(filled+d.length,ringSize);
+    // âncora: liga índice de amostra ao relógio do contexto
+    refSample=totalSamples;refTime=ctx.currentTime;
+  };
+  const mute=ctx.createGain();mute.gain.value=0;
+  micNode.connect(proc).connect(mute).connect(ctx.destination);
+}
+
+function closeMic(){
+  try{if(proc)proc.disconnect()}catch(e){}
+  try{if(micNode)micNode.disconnect()}catch(e){}
+  try{if(stream)stream.getTracks().forEach(t=>t.stop())}catch(e){}
+  try{if(unlockEl)unlockEl.pause()}catch(e){}
+  if(ctx){try{ctx.close()}catch(e){}}
+  ctx=stream=proc=micNode=null;ring=null;
+  stopMotion();
+}
+
+function readRange(fromAbs,len){
+  const out=new Float32Array(len);
+  const back=totalSamples-fromAbs;
+  if(back<=0||back>ringSize)return null;
+  let p=(writePos-back+ringSize*2)%ringSize;
+  for(let i=0;i<len;i++){out[i]=ring[p];p=(p+1)%ringSize}
+  return out;
+}
+
+// ─── sensor de movimento ───
+function startMotion(){
+  motionOK=true;motionVar=0;
+  if(typeof DeviceMotionEvent==='undefined')return;
+  const h=e=>{
+    const a=e.accelerationIncludingGravity;
+    if(!a)return;
+    const m=Math.hypot(a.x||0,a.y||0,a.z||0);
+    if(window._lastM!==undefined){
+      const d=Math.abs(m-window._lastM);
+      motionVar=motionVar*.9+d*.1;
+      if(d>1.2)motionOK=false;
+    }
+    window._lastM=m;
+  };
+  window._motionH=h;window.addEventListener('devicemotion',h);
+  motionWatch=true;
+}
+function stopMotion(){
+  if(window._motionH)window.removeEventListener('devicemotion',window._motionH);
+  motionWatch=false;
+}
+async function askMotion(){
+  try{
+    if(typeof DeviceMotionEvent!=='undefined'&&DeviceMotionEvent.requestPermission){
+      await DeviceMotionEvent.requestPermission();
+    }
+  }catch(e){}
+}
+
+// ─── uma passada ───
+function playAndCapture(band){
+  return new Promise(resolve=>{
+    const fs=ctx.sampleRate;
+    const sweep=logSweep(fs,SWEEP_D,band.f1,band.f2);
+    const buf=ctx.createBuffer(1,sweep.length,fs);
+    buf.copyToChannel(sweep,0);
+    const src=ctx.createBufferSource();src.buffer=buf;
+    const g=ctx.createGain();g.gain.value=.95;
+    src.connect(g).connect(ctx.destination);
+
+    const playAt=ctx.currentTime+.3;
+    src.start(playAt);
+
+    // índice absoluto estimado do instante de disparo
+    const startAbs=Math.round(refSample+(playAt-refTime)*fs);
+    const capLen=Math.round(fs*(SWEEP_D+.55));
+
+    setTimeout(()=>{
+      const rec=readRange(startAbs,capLen);
+      if(!rec){resolve(null);return}
+      const r=bandpass(sweep,fs,band.f1,band.f2,2);
+      const c=bandpass(rec,fs,band.f1,band.f2,2);
+      const corr=crossCorr(r,c);
+      const len=Math.min(corr.length/2,c.length);
+      const win=corr.subarray(0,len);
+      const env=envelope(win);
+      let pi=0,pv=-Infinity;
+      for(let i=0;i<env.length;i++)if(env[i]>pv){pv=env[i];pi=i}
+      const guard=Math.round(fs*.005);
+      let ss=0,cnt=0;
+      for(let i=0;i<env.length;i++){
+        if(Math.abs(i-pi)<guard)continue;
+        ss+=env[i]*env[i];cnt++;
+      }
+      const noise=cnt?Math.sqrt(ss/cnt):1e-12;
+      const conf=20*Math.log10(pv/(noise||1e-12));
+      let rms=0;for(let i=0;i<rec.length;i++)rms+=rec[i]*rec[i];
+      rms=Math.sqrt(rms/rec.length);
+      resolve({ms:(refine(env,pi)/fs)*1000,conf,rms,
+               polarity:win[pi]>=0?'+':'-'});
+    },(SWEEP_D+.95)*1000);
+  });
+}
+
+// ─── medir uma fonte ───
+async function measureSource(which){
+  const scen=SCENARIOS[curScen];
+  const band=which==='A'?scen.ba:scen.bb;
+  const name=which==='A'?scen.a:scen.b;
+  const st=document.getElementById('mStatus');
+  const el=document.getElementById(which==='A'?'srcA':'srcB');
+  const msg=document.getElementById(which==='A'?'msgA':'msgB');
+  const res=document.getElementById(which==='A'?'resA':'resB');
+  const prog=document.getElementById('prog');
+
+  setBusy(true);
+  try{
+    if(!ctx){
+      st.innerHTML='<span class="dot"></span>Abrindo microfone…';
+      await askMotion();
+      await openMic();
+      startMotion();
+      await new Promise(r=>setTimeout(r,900));
+    }
+  }catch(e){
+    st.textContent='Sem acesso ao microfone: '+e.message;
+    setBusy(false);return;
+  }
+
+  const runs=[];
+  for(let i=1;i<=PASSES;i++){
+    motionOK=true;
+    st.innerHTML='<span class="dot"></span>Medindo '+name+' — passada '+i+' de '+PASSES;
+    prog.style.width=((i-1)/PASSES*100)+'%';
+    const r=await playAndCapture(band);
+    if(r){r.moved=!motionOK;runs.push(r)}
+    await new Promise(r=>setTimeout(r,250));
+  }
+  prog.style.width='100%';
+
+  const still=runs.filter(r=>!r.moved);
+  const pool=still.length>=2?still:runs;
+  const good=pool.filter(r=>r.conf>=CONF_MIN);
+  const use=good.length>=2?good:pool;
+
+  if(!use.length){
+    msg.textContent='Falhou. Tente de novo.';setBusy(false);return;
+  }
+
+  const ms=median(use.map(r=>r.ms));
+  const sp=Math.max(...use.map(r=>r.ms))-Math.min(...use.map(r=>r.ms));
+  const conf=use.reduce((s,r)=>s+r.conf,0)/use.length;
+  const moved=runs.some(r=>r.moved);
+
+  const out={ms,spread:sp,conf,n:use.length,moved,
+    polarity:use.filter(r=>r.polarity==='-').length>use.length/2?'-':'+'};
+  if(which==='A')resA=out;else resB=out;
+
+  el.classList.add('done');
+  res.textContent=ms.toFixed(2)+' ms';
+  msg.textContent=conf.toFixed(0)+' dB · dispersão '+sp.toFixed(2)+' ms'+
+    (moved?' · houve movimento':'');
+
+  st.textContent=(resA&&resB)?'Pronto. Toque em Calcular delay.'
+    :'Agora ligue só a outra fonte e meça ela.';
+  document.getElementById('calcBtn').disabled=!(resA&&resB);
+  prog.style.width='0%';
+  setBusy(false);
+}
+
+let busy=false;
+function setBusy(b){
+  busy=b;
+  document.getElementById('srcA').style.opacity=b?.5:1;
+  document.getElementById('srcB').style.opacity=b?.5:1;
+}
+
+// ══════════════════════ FLUXO ══════════════════════
+function startMeas(key){
+  curScen=key;resA=resB=null;
+  const s=SCENARIOS[key];
+  document.getElementById('mTitle').textContent=s.t;
+  document.getElementById('nameA').textContent=s.a;
+  document.getElementById('nameB').textContent=s.b;
+  document.getElementById('resA').textContent='—';
+  document.getElementById('resB').textContent='—';
+  document.getElementById('msgA').textContent='Toque para medir';
+  document.getElementById('msgB').textContent='Toque para medir';
+  document.getElementById('srcA').classList.remove('done');
+  document.getElementById('srcB').classList.remove('done');
+  document.getElementById('calcBtn').disabled=true;
+  document.getElementById('mStatus').textContent=
+    s.d+'. Ligue só '+s.a+' e toque nela acima.';
+  go('pMeas');
+}
+
+document.getElementById('srcA').addEventListener('click',()=>{
+  if(!busy)measureSource('A')});
+document.getElementById('srcB').addEventListener('click',()=>{
+  if(!busy)measureSource('B')});
+
+function abortMeas(){closeMic();go('pEvent')}
+
+function finishMeas(){
+  const s=SCENARIOS[curScen];
+  const diff=resA.ms-resB.ms;
+  // quem chega depois está mais longe; o delay entra em quem chega antes
+  const applyTo=diff>0?s.b:s.a;
+  const amount=Math.abs(diff);
+  const meters=(amount/1000)*SOUND;
+  const feet=meters*3.28084;
+  const conf=Math.min(resA.conf,resB.conf);
+  const spread=Math.max(resA.spread,resB.spread);
+  const weak=conf<CONF_MIN||spread>1.5;
+
+  curResult={ms:amount,applyTo,meters,feet,conf,spread,weak,
+    scen:s.t,polA:resA.polarity,polB:resB.polarity};
+
+  document.getElementById('rMs').innerHTML=amount.toFixed(2)+'<small>ms</small>';
+  document.getElementById('rApply').textContent='aplique em '+applyTo;
+  document.getElementById('rEquiv').textContent=
+    meters.toFixed(2)+' m · '+feet.toFixed(1)+' ft';
+
+  setStat('sA',s.a,resA.ms.toFixed(1)+' ms');
+  setStat('sB',s.b,resB.ms.toFixed(1)+' ms');
+  setStat('sConf','Confiança',conf.toFixed(0)+' dB',conf<CONF_MIN);
+  setStat('sSpread','Dispersão',spread.toFixed(2)+' ms',spread>1.5);
+
+  const w=document.getElementById('rWarn');
+  if(weak){
+    w.style.display='block';
+    w.textContent='Medição fraca. Aumente o nível da fonte, procure um ponto '+
+      'com menos reflexão e repita antes de usar este valor.';
+  }else w.style.display='none';
+
+  document.getElementById('rNote').textContent=
+    'Medido a partir da sua posição. Vale para este ponto. '+
+    'Polaridade relativa: '+(resA.polarity===resB.polarity?'igual':'invertida entre si')+'.';
+
+  go('pRes');
+}
+
+function setStat(id,k,v,bad){
+  const e=document.getElementById(id);
+  e.querySelector('.k').textContent=k;
+  e.querySelector('.v').textContent=v;
+  e.className='stat'+(bad?' bad':'');
+}
+
+function saveResult(){
+  events[curEv].meas.unshift(curResult);
+  save();closeMic();renderMeas();renderEvents();go('pEvent');
+}
+
+// ══════════════════════ INIT ══════════════════════
+load();renderEvents();
+window.addEventListener('pagehide',closeMic);
+</script>
+</body>
+</html>
