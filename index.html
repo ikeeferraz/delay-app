@@ -4,152 +4,249 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>Delay</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#101215">
+<title>Alinha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --deep:#0E1013;
+  --chassis:#1A1D22;
+  --panel:#212530;
+  --edge:#2E333D;
+  --ink:#E9E7E2;
+  --dim:#878C96;
+  --faint:#5A606B;
+  --amber:#FFAE22;
+  --amber-dim:#8A5F14;
+  --green:#3CCB7F;
+  --red:#E5484D;
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;
   -webkit-user-select:none;user-select:none}
-body{margin:0;padding:env(safe-area-inset-top) 16px 40px;
- font-family:-apple-system,BlinkMacSystemFont,sans-serif;
- background:#0d0d0f;color:#f0f0f2;line-height:1.45;overscroll-behavior:none}
-.top{display:flex;align-items:center;gap:12px;padding:16px 0 18px}
-.back{width:34px;height:34px;border-radius:9px;background:#1e1e22;
- display:flex;align-items:center;justify-content:center;font-size:19px;color:#999}
-h1{font-size:21px;margin:0;font-weight:700;letter-spacing:-.3px}
-.sub{font-size:13px;color:#7a7a82;margin:-12px 0 20px}
-button{width:100%;padding:17px;font-size:16px;font-weight:600;border:0;
- border-radius:13px;background:#1e1e22;color:#f0f0f2;margin-bottom:9px;
- display:block;text-align:left}
-button.go{background:#00c07f;color:#04241a;text-align:center;font-size:17px}
-button.go:disabled{background:#1e1e22;color:#55555c}
-button.ghost{background:transparent;border:1px solid #2a2a30;color:#9a9aa2;
- text-align:center;font-size:14px;padding:13px}
-button.danger{background:transparent;color:#d85;text-align:center;font-size:14px;padding:12px}
+html,body{margin:0;background:var(--deep)}
+body{
+  font-family:'Barlow',-apple-system,BlinkMacSystemFont,sans-serif;
+  color:var(--ink);line-height:1.5;
+  padding:calc(env(safe-area-inset-top) + 8px) 15px calc(env(safe-area-inset-bottom) + 34px);
+  overscroll-behavior:none;
+}
+.num{font-family:'Barlow Condensed',Impact,sans-serif;
+  font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+
+/* ── cabeçalho ── */
+.bar{display:flex;align-items:center;gap:11px;padding:14px 0 20px;min-height:62px}
+.bar .back{width:36px;height:36px;border-radius:5px;background:var(--chassis);
+  border:1px solid var(--edge);display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--dim);flex:0 0 auto}
+.bar h1{font-size:22px;margin:0;font-weight:600;letter-spacing:-.2px;flex:1}
+.bar .tag{font-size:12px;color:var(--faint);font-weight:500}
+
+/* ── marca ── */
+.brand{display:flex;align-items:baseline;gap:9px;flex:1}
+.brand .w{font-family:'Barlow Condensed';font-weight:700;font-size:30px;
+  letter-spacing:.5px;color:var(--ink)}
+.brand .s{font-size:11.5px;color:var(--faint);font-weight:500}
+
 .panel{display:none}.panel.on{display:block}
-.card{background:#16161a;border:1px solid #232329;border-radius:14px;
- padding:15px;margin-bottom:10px}
-.card .t{font-size:15px;font-weight:600}
-.card .d{font-size:12.5px;color:#7a7a82;margin-top:3px}
-.pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;
- background:#232329;color:#9a9aa2;margin-top:8px;font-weight:600}
-.pill.ok{background:#0b3d2b;color:#2ddc9a}
-.pill.no{background:#3d1a1a;color:#f77}
-.hero{text-align:center;padding:30px 16px;background:#16161a;
- border:1px solid #232329;border-radius:16px;margin-bottom:12px}
-.hero .n{font-size:58px;font-weight:800;letter-spacing:-2px;line-height:1;
- font-variant-numeric:tabular-nums}
-.hero .n small{font-size:22px;font-weight:600;color:#7a7a82;margin-left:4px}
-.hero .c{font-size:14px;color:#9a9aa2;margin-top:10px}
-.hero .x{font-size:12.5px;color:#6a6a72;margin-top:4px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.stat{background:#16161a;border:1px solid #232329;border-radius:11px;padding:11px 13px}
-.stat .k{font-size:10.5px;color:#6a6a72;text-transform:uppercase;letter-spacing:.5px}
-.stat .v{font-size:18px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
-.stat.bad .v{color:#f77}
-.src{background:#16161a;border:1px solid #232329;border-radius:14px;
- padding:16px;margin-bottom:10px}
-.src.done{border-color:#00c07f44;background:#0d2620}
-.src .h{display:flex;justify-content:space-between;align-items:center}
-.src .n{font-size:16px;font-weight:700}
-.src .r{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
-.src .m{font-size:12.5px;color:#7a7a82;margin-top:4px}
-.warn{background:#2a1f0b;border:1px solid #5a4415;border-radius:12px;
- padding:13px;font-size:13px;color:#e8c46a;margin-bottom:12px}
-.note{font-size:12.5px;color:#6a6a72;margin-top:18px}
-input{width:100%;padding:15px;font-size:16px;background:#16161a;
- border:1px solid #2a2a30;border-radius:12px;color:#f0f0f2;margin-bottom:10px;
- -webkit-user-select:text;user-select:text}
-.bar{height:5px;background:#232329;border-radius:3px;overflow:hidden;margin:14px 0 4px}
-.bar i{display:block;height:100%;background:#00c07f;width:0%;transition:width .2s}
-.big-status{text-align:center;padding:28px 16px;font-size:16px;color:#9a9aa2}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;
- background:#00c07f;margin-right:7px;animation:p 1s infinite}
-@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
-h2{font-size:11.5px;color:#6a6a72;text-transform:uppercase;letter-spacing:.7px;
- margin:24px 0 9px;font-weight:700}
+
+/* ── painéis ── */
+.pnl{background:var(--chassis);border:1px solid var(--edge);border-radius:6px;
+  padding:15px;margin-bottom:9px;position:relative}
+.pnl::before{content:'';position:absolute;top:0;left:1px;right:1px;height:1px;
+  background:linear-gradient(90deg,transparent,#3A404C,transparent)}
+.pnl .t{font-size:16px;font-weight:600}
+.pnl .d{font-size:13px;color:var(--dim);margin-top:2px}
+.pnl.tap:active{background:var(--panel)}
+
+/* ── botões ── */
+button{width:100%;font-family:inherit;font-size:15.5px;font-weight:600;border:0;
+  border-radius:5px;padding:16px;margin-bottom:8px;display:block;color:var(--ink);
+  background:var(--chassis);border:1px solid var(--edge)}
+button.key{background:var(--amber);color:#241704;border:0;font-size:16.5px}
+button.key:disabled{background:var(--chassis);color:var(--faint);
+  border:1px solid var(--edge)}
+button.quiet{background:transparent;border:1px solid var(--edge);color:var(--dim);
+  font-size:14px;padding:13px;font-weight:500}
+button.link{background:none;border:0;color:var(--faint);font-size:13.5px;
+  font-weight:500;padding:11px}
+
+/* ── etiqueta de seção ── */
+.sect{font-size:12.5px;color:var(--faint);font-weight:600;
+  margin:24px 0 9px;display:flex;align-items:center;gap:9px}
+.sect::after{content:'';flex:1;height:1px;background:var(--edge)}
+
+/* ── display âmbar ── */
+.disp{background:#0A0C0E;border:1px solid var(--edge);border-radius:7px;
+  padding:26px 18px 20px;text-align:center;margin-bottom:10px;
+  box-shadow:inset 0 2px 14px rgba(0,0,0,.7)}
+.disp .v{font-family:'Barlow Condensed';font-weight:700;font-size:74px;
+  line-height:.9;color:var(--amber);font-variant-numeric:tabular-nums;
+  text-shadow:0 0 22px rgba(255,174,34,.28)}
+.disp .v u{font-size:26px;text-decoration:none;margin-left:5px;color:var(--amber-dim)}
+.disp .act{font-size:16px;font-weight:600;margin-top:12px}
+.disp .eq{font-size:13px;color:var(--dim);margin-top:3px}
+
+/* ── canal ── */
+.ch{background:var(--chassis);border:1px solid var(--edge);border-radius:6px;
+  padding:14px 15px;margin-bottom:8px;border-left:3px solid var(--edge)}
+.ch.live{border-left-color:var(--amber)}
+.ch.set{border-left-color:var(--green)}
+.ch .r1{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ch .n{font-size:16px;font-weight:600}
+.ch .v{font-family:'Barlow Condensed';font-weight:700;font-size:23px;
+  color:var(--faint);font-variant-numeric:tabular-nums}
+.ch.set .v{color:var(--green)}
+.ch .m{font-size:12.5px;color:var(--dim);margin-top:3px}
+
+/* ── métricas ── */
+.mx{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px}
+.mx div{background:var(--chassis);border:1px solid var(--edge);border-radius:5px;
+  padding:10px 12px}
+.mx .k{font-size:11.5px;color:var(--faint);font-weight:500}
+.mx .v{font-family:'Barlow Condensed';font-weight:600;font-size:20px;margin-top:1px;
+  font-variant-numeric:tabular-nums}
+.mx .bad .v{color:var(--red)}
+
+/* ── avisos ── */
+.flag{border:1px solid #5C4415;background:#241B08;border-radius:6px;padding:13px;
+  font-size:13.5px;color:#F0C462;margin-bottom:11px}
+.flag.hot{border-color:#5C2020;background:#241010;color:#F09090}
+
+/* ── medidor de nível ── */
+.meter{display:flex;gap:2px;margin:15px 0 6px;height:6px}
+.meter i{flex:1;background:var(--edge);border-radius:1px}
+.meter i.on{background:var(--amber)}
+.meter i.pk{background:var(--green)}
+
+.state{text-align:center;font-size:15px;color:var(--dim);padding:22px 10px}
+.state b{color:var(--ink);font-weight:600}
+.blink{display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--amber);margin-right:8px;animation:bl 1.1s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+
+input{width:100%;padding:15px;font-size:16px;font-family:inherit;
+  background:#0A0C0E;border:1px solid var(--edge);border-radius:5px;
+  color:var(--ink);margin-bottom:9px;-webkit-user-select:text;user-select:text}
+input::placeholder{color:var(--faint)}
+
+.note{font-size:13px;color:var(--faint);margin-top:18px;line-height:1.55}
+.err{color:var(--red);font-size:13.5px;margin-top:12px}
+
+/* ── tutorial ── */
+.step{background:var(--chassis);border:1px solid var(--edge);border-radius:6px;
+  overflow:hidden;margin-bottom:10px}
+.step .art{background:#0A0C0E;padding:14px 10px;border-bottom:1px solid var(--edge)}
+.step .art svg{display:block;width:100%;height:auto}
+.step .tx{padding:14px 15px}
+.step .tx .t{font-size:16px;font-weight:600}
+.step .tx .d{font-size:13.5px;color:var(--dim);margin-top:4px}
+.dots{display:flex;gap:6px;justify-content:center;margin:14px 0 16px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--edge)}
+.dots i.on{background:var(--amber)}
 </style>
 </head>
 <body>
 
-<!-- ================= EVENTOS ================= -->
-<div id="pHome" class="panel on">
-  <div class="top"><h1>Delay</h1></div>
-  <button class="go" onclick="newEvent()">Novo evento</button>
-  <h2>Eventos</h2>
-  <div id="evList"></div>
-  <div class="note">Cada evento guarda as medições daquele local. O microfone
-  fica aberto durante toda a sessão — é isso que faz a conta fechar.</div>
+<!-- ══════════ TUTORIAL ══════════ -->
+<div id="pTut" class="panel">
+  <div class="bar"><h1 id="tutH">Como medir</h1><span class="tag" id="tutN"></span></div>
+  <div id="tutBody"></div>
+  <div class="dots" id="tutDots"></div>
+  <button class="key" id="tutNext">Continuar</button>
+  <button class="link" id="tutSkip">Pular</button>
 </div>
 
-<!-- ================= NOVO EVENTO ================= -->
-<div id="pNew" class="panel">
-  <div class="top"><div class="back" onclick="go('pHome')">‹</div><h1>Novo evento</h1></div>
-  <input id="evName" placeholder="Local (ex. Salão Vista Verde)" autocomplete="off">
-  <button class="go" id="createBtn">Criar</button>
-  <button class="ghost" onclick="go('pHome')">Cancelar</button>
-  <div class="note" id="errBox" style="color:#f77"></div>
-</div>
-
-<!-- ================= EVENTO ================= -->
-<div id="pEvent" class="panel">
-  <div class="top"><div class="back" onclick="go('pHome')">‹</div><h1 id="evTitle">Evento</h1></div>
-  <h2>Nova medição</h2>
-  <div id="scenList"></div>
-  <h2>Medições deste evento</h2>
-  <div id="mList"></div>
-  <button class="danger" onclick="deleteEvent()">Apagar evento</button>
-</div>
-
-<!-- ================= MEDIÇÃO ================= -->
-<div id="pMeas" class="panel">
-  <div class="top"><div class="back" onclick="abortMeas()">‹</div><h1 id="mTitle">Medição</h1></div>
-
-  <div class="warn" id="mWarn">
-    Desconecte fones e caixas Bluetooth. Apoie o celular numa superfície firme
-    e não mexa durante a captura.
+<!-- ══════════ EVENTOS ══════════ -->
+<div id="pHome" class="panel">
+  <div class="bar">
+    <div class="brand"><span class="w">ALINHA</span><span class="s">medidor de delay</span></div>
   </div>
+  <button class="key" id="btnNew">Novo evento</button>
+  <div class="sect">Eventos</div>
+  <div id="evList"></div>
+  <button class="link" id="btnTut">Rever como medir</button>
+</div>
 
-  <div class="src" id="srcA">
-    <div class="h"><div class="n" id="nameA">Fonte A</div><div class="r" id="resA">—</div></div>
+<!-- ══════════ NOVO EVENTO ══════════ -->
+<div id="pNew" class="panel">
+  <div class="bar"><div class="back" data-go="pHome">‹</div><h1>Novo evento</h1></div>
+  <input id="evName" placeholder="Nome do local" autocomplete="off">
+  <button class="key" id="btnCreate">Criar evento</button>
+  <button class="quiet" data-go="pHome">Cancelar</button>
+  <div class="err" id="errBox"></div>
+  <div class="note">O evento agrupa as medições de um mesmo local. Você pode
+  abrir de novo depois e continuar de onde parou.</div>
+</div>
+
+<!-- ══════════ EVENTO ══════════ -->
+<div id="pEvent" class="panel">
+  <div class="bar"><div class="back" data-go="pHome">‹</div><h1 id="evTitle">Evento</h1></div>
+  <div class="sect">O que alinhar</div>
+  <div id="scenList"></div>
+  <div class="sect">Medições</div>
+  <div id="mList"></div>
+  <button class="link" id="btnDel">Apagar este evento</button>
+</div>
+
+<!-- ══════════ POSICIONAMENTO ══════════ -->
+<div id="pPos" class="panel">
+  <div class="bar"><div class="back" data-go="pEvent">‹</div><h1 id="posH">Posição</h1></div>
+  <div class="step">
+    <div class="art" id="posArt"></div>
+    <div class="tx"><div class="t" id="posT"></div><div class="d" id="posD"></div></div>
+  </div>
+  <div class="flag" id="posFlag"></div>
+  <button class="key" id="btnPosGo">Estou posicionado</button>
+  <button class="quiet" data-go="pEvent">Voltar</button>
+</div>
+
+<!-- ══════════ MEDIÇÃO ══════════ -->
+<div id="pMeas" class="panel">
+  <div class="bar"><div class="back" id="btnAbort">‹</div><h1 id="mTitle">Medição</h1></div>
+
+  <div class="ch" id="chA">
+    <div class="r1"><span class="n" id="nameA">Fonte A</span><span class="v" id="resA">– – –</span></div>
     <div class="m" id="msgA">Toque para medir</div>
   </div>
 
-  <div class="src" id="srcB">
-    <div class="h"><div class="n" id="nameB">Fonte B</div><div class="r" id="resB">—</div></div>
+  <div class="ch" id="chB">
+    <div class="r1"><span class="n" id="nameB">Fonte B</span><span class="v" id="resB">– – –</span></div>
     <div class="m" id="msgB">Toque para medir</div>
   </div>
 
-  <div class="bar"><i id="prog"></i></div>
-  <div class="big-status" id="mStatus">Ligue só a primeira fonte e toque nela acima.</div>
+  <div class="meter" id="meter"></div>
+  <div class="state" id="mStatus">Ligue só a primeira fonte.</div>
 
-  <button class="go" id="calcBtn" disabled onclick="finishMeas()">Calcular delay</button>
-  <button class="ghost" onclick="abortMeas()">Cancelar</button>
+  <button class="key" id="btnCalc" disabled>Calcular delay</button>
+  <button class="quiet" id="btnAbort2">Cancelar medição</button>
 </div>
 
-<!-- ================= RESULTADO ================= -->
+<!-- ══════════ RESULTADO ══════════ -->
 <div id="pRes" class="panel">
-  <div class="top"><h1>Resultado</h1></div>
-  <div class="hero">
-    <div class="n" id="rMs">—<small>ms</small></div>
-    <div class="c" id="rApply">—</div>
-    <div class="x" id="rEquiv">—</div>
+  <div class="bar"><h1>Resultado</h1></div>
+  <div class="disp">
+    <div class="v num" id="rMs">–<u>ms</u></div>
+    <div class="act" id="rApply"></div>
+    <div class="eq" id="rEquiv"></div>
   </div>
-  <div class="grid2">
-    <div class="stat" id="sA"><div class="k">Fonte A</div><div class="v">—</div></div>
-    <div class="stat" id="sB"><div class="k">Fonte B</div><div class="v">—</div></div>
-    <div class="stat" id="sConf"><div class="k">Confiança</div><div class="v">—</div></div>
-    <div class="stat" id="sSpread"><div class="k">Dispersão</div><div class="v">—</div></div>
+  <div class="mx">
+    <div id="sA"><div class="k">–</div><div class="v">–</div></div>
+    <div id="sB"><div class="k">–</div><div class="v">–</div></div>
+    <div id="sConf"><div class="k">Confiança</div><div class="v">–</div></div>
+    <div id="sSpread"><div class="k">Dispersão</div><div class="v">–</div></div>
   </div>
-  <div class="warn" id="rWarn" style="display:none"></div>
-  <button class="go" onclick="saveResult()">Salvar no evento</button>
-  <button class="ghost" onclick="go('pEvent')">Descartar</button>
+  <div class="flag hot" id="rWarn" style="display:none"></div>
+  <button class="key" id="btnSave">Salvar no evento</button>
+  <button class="quiet" id="btnDiscard">Descartar</button>
   <div class="note" id="rNote"></div>
 </div>
 
 <script>
 // ══════════════════════ DSP ══════════════════════
 function nextPow2(n){let p=1;while(p<n)p<<=1;return p}
-
 function fft(re,im,inv){
   const n=re.length;if(n<=1)return;
   for(let i=1,j=0;i<n;i++){
@@ -172,16 +269,14 @@ function fft(re,im,inv){
   }
   if(inv)for(let i=0;i<n;i++){re[i]/=n;im[i]/=n}
 }
-
 function logSweep(fs,dur,f1,f2){
   const n=Math.round(fs*dur),o=new Float32Array(n);
   const K=(dur*2*Math.PI*f1)/Math.log(f2/f1),L=Math.log(f2/f1)/dur;
   for(let i=0;i<n;i++)o[i]=Math.sin(K*(Math.exp((i/fs)*L)-1));
-  const f=Math.round(fs*0.012);
+  const f=Math.round(fs*.012);
   for(let i=0;i<f;i++){const w=.5*(1-Math.cos(Math.PI*i/f));o[i]*=w;o[n-1-i]*=w}
   return o;
 }
-
 function bandpass(sig,fs,f1,f2,passes){
   let d=Float32Array.from(sig);
   const fc=Math.sqrt(f1*f2),bw=Math.log2(f2/f1),w0=2*Math.PI*fc/fs;
@@ -197,7 +292,6 @@ function bandpass(sig,fs,f1,f2,passes){
   }
   return d;
 }
-
 function crossCorr(ref,rec){
   const n=nextPow2(ref.length+rec.length);
   const aR=new Float64Array(n),aI=new Float64Array(n);
@@ -212,7 +306,6 @@ function crossCorr(ref,rec){
   }
   fft(cR,cI,true);return cR;
 }
-
 function envelope(sig){
   const n=nextPow2(sig.length);
   const re=new Float64Array(n),im=new Float64Array(n);
@@ -226,144 +319,230 @@ function envelope(sig){
   for(let i=0;i<sig.length;i++)e[i]=Math.hypot(re[i],im[i]);
   return e;
 }
-
 function refine(a,i){
   if(i<=0||i>=a.length-1)return i;
   const y0=a[i-1],y1=a[i],y2=a[i+1],d=y0-2*y1+y2;
   return d===0?i:i+.5*(y0-y2)/d;
 }
-
-function median(arr){
-  const s=[...arr].sort((a,b)=>a-b),m=s.length>>1;
-  return s.length%2?s[m]:(s[m-1]+s[m])/2;
-}
+function median(a){const s=[...a].sort((x,y)=>x-y),m=s.length>>1;
+  return s.length%2?s[m]:(s[m-1]+s[m])/2}
 
 // ══════════════════════ CONFIG ══════════════════════
-const SOUND=343, PASSES=4, SWEEP_D=1.2;
-const BAND_FULL={f1:200,f2:8000}, BAND_SUB={f1:50,f2:120};
-const CONF_MIN=14;
+const SOUND=343,PASSES=4,SWEEP_D=1.2,CONF_MIN=14;
+const FULL={f1:200,f2:8000},SUB={f1:50,f2:120};
 
-const SCENARIOS={
-  pa_torre:{t:'PA × Torre de delay',
-    d:'Fique na zona de cruzamento, perto da torre',
-    a:'PA principal',b:'Torre de delay',ba:BAND_FULL,bb:BAND_FULL},
-  l_r:{t:'Lado L × Lado R',
-    d:'Fique no centro, à mesma distância dos dois',
-    a:'Lado L',b:'Lado R',ba:BAND_FULL,bb:BAND_FULL},
-  sub_top:{t:'Sub × Top',
-    d:'Fique no eixo, à mesma distância das duas',
-    a:'Top',b:'Sub',ba:BAND_FULL,bb:BAND_SUB},
-  front_pa:{t:'PA × Front fill',
-    d:'Fique na primeira fila, na zona do front',
-    a:'PA principal',b:'Front fill',ba:BAND_FULL,bb:BAND_FULL},
-  custom:{t:'Personalizado',
-    d:'Duas fontes quaisquer, medidas do mesmo ponto',
-    a:'Fonte A',b:'Fonte B',ba:BAND_FULL,bb:BAND_FULL}
+// ── desenhos de posicionamento (vista de cima) ──
+const A_STAGE='<rect x="12" y="10" width="296" height="30" rx="3" fill="#191C21" stroke="#2E333D"/>'+
+  '<text x="160" y="30" fill="#5A606B" font-size="11" font-family="Barlow" text-anchor="middle">PALCO</text>';
+function spk(x,y,l){return '<rect x="'+(x-13)+'" y="'+(y-9)+'" width="26" height="18" rx="2" fill="#2A2F3A" stroke="#3E4550"/>'+
+  '<circle cx="'+x+'" cy="'+y+'" r="5" fill="#161A1F" stroke="#4A515E"/>'+
+  '<text x="'+x+'" y="'+(y+24)+'" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">'+l+'</text>'}
+function ph(x,y,lbl){return '<rect x="'+(x-8)+'" y="'+(y-14)+'" width="16" height="28" rx="3" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
+  '<circle cx="'+x+'" cy="'+(y-9)+'" r="2" fill="#FFAE22"/>'+
+  '<text x="'+x+'" y="'+(y+27)+'" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">'+(lbl||'CELULAR')+'</text>'}
+function dash(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+
+  '" stroke="#3E4550" stroke-width="1" stroke-dasharray="4 4"/>'}
+function svg(inner,h){return '<svg viewBox="0 0 320 '+(h||190)+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>'}
+
+const SCEN={
+  pa_torre:{t:'PA e torre de delay',
+    d:'A torre precisa esperar o som do PA chegar',
+    a:'PA principal',b:'Torre de delay',ba:FULL,bb:FULL,
+    pos:'Fique na zona de cruzamento',
+    posd:'Vá até onde o som do PA e o da torre chegam com força parecida — normalmente alguns metros antes da torre. Mic do celular apontado para o palco.',
+    art:svg(A_STAGE+spk(60,55,'PA L')+spk(260,55,'PA R')+
+      spk(60,150,'TORRE')+spk(260,150,'TORRE')+
+      dash(160,42,160,120)+ph(160,128))},
+  l_r:{t:'Lado L e lado R',
+    d:'Confere se os dois lados chegam juntos',
+    a:'Lado L',b:'Lado R',ba:FULL,bb:FULL,
+    pos:'Fique no centro',
+    posd:'Meça do ponto exatamente entre as duas caixas. Se estiver fora do eixo, o valor vale só para essa posição.',
+    art:svg(A_STAGE+spk(50,70,'L')+spk(270,70,'R')+
+      dash(50,70,160,130)+dash(270,70,160,130)+ph(160,140))},
+  sub_top:{t:'Sub e top',
+    d:'O alinhamento que mais gente erra',
+    a:'Top',b:'Sub',ba:FULL,bb:SUB,
+    pos:'Fique no eixo, à mesma distância',
+    posd:'Alinhado com a pilha, a uns 3 metros. O sub é medido em faixa estreita, então precisa de nível alto.',
+    art:svg(A_STAGE+spk(160,62,'TOP')+spk(160,108,'SUB')+
+      dash(160,120,160,150)+ph(160,158))},
+  front_pa:{t:'PA e front fill',
+    d:'Para a primeira fila não ouvir dobrado',
+    a:'PA principal',b:'Front fill',ba:FULL,bb:FULL,
+    pos:'Fique na primeira fila',
+    posd:'No ponto onde o front fill cobre e o PA ainda chega. Celular na altura da cabeça de quem vai ficar ali.',
+    art:svg(A_STAGE+spk(55,62,'PA L')+spk(265,62,'PA R')+
+      spk(160,48,'FRONT')+dash(160,60,160,120)+ph(160,130))},
+  custom:{t:'Duas fontes quaisquer',
+    d:'Você escolhe o que comparar',
+    a:'Fonte A',b:'Fonte B',ba:FULL,bb:FULL,
+    pos:'Escolha um ponto e não saia dele',
+    posd:'Meça as duas fontes do mesmo lugar, sem mover o celular entre elas. É a única regra que não dá para quebrar.',
+    art:svg(spk(60,60,'FONTE A')+spk(260,60,'FONTE B')+
+      dash(60,60,160,120)+dash(260,60,160,120)+ph(160,130),175)}
 };
 
-// ══════════════════════ ESTADO ══════════════════════
-let events=[], curEv=null, curScen=null;
-let resA=null, resB=null, curResult=null;
+// ── tutorial ──
+const TUT=[
+ {t:'Ligue o celular no console',
+  d:'Adaptador Lightning para P2, saída do celular na entrada de um canal. É por aí que o sinal de teste entra no sistema. Sem cabo também funciona, mirando o alto-falante do celular num mic aberto, mas com menos nível.',
+  art:svg('<rect x="28" y="62" width="52" height="86" rx="7" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
+    '<circle cx="54" cy="78" r="3" fill="#FFAE22"/>'+
+    '<text x="54" y="164" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">CELULAR</text>'+
+    '<path d="M80 105 H150" stroke="#FFAE22" stroke-width="2"/>'+
+    '<circle cx="152" cy="105" r="4" fill="#FFAE22"/>'+
+    '<text x="115" y="96" fill="#878C96" font-size="10" font-family="Barlow" text-anchor="middle">Lightning → P2</text>'+
+    '<rect x="168" y="58" width="124" height="94" rx="4" fill="#191C21" stroke="#2E333D"/>'+
+    '<rect x="178" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
+    '<rect x="198" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
+    '<rect x="218" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
+    '<rect x="238" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
+    '<rect x="258" y="70" width="14" height="60" rx="2" fill="#2A2F3A"/>'+
+    '<text x="230" y="164" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">CONSOLE</text>',180)},
+ {t:'Apoie numa superfície firme',
+  d:'Mesa, case, caixa de cabo. Não segure na mão — 30 cm de movimento já erram quase 1 ms. O app trava a captura se detectar que o celular mexeu.',
+  art:svg('<rect x="40" y="112" width="240" height="9" rx="2" fill="#2A2F3A"/>'+
+    '<rect x="132" y="70" width="36" height="42" rx="4" fill="#0A0C0E" stroke="#FFAE22" stroke-width="1.5"/>'+
+    '<circle cx="150" cy="80" r="3" fill="#FFAE22"/>'+
+    '<path d="M150 58 V44" stroke="#FFAE22" stroke-width="1.5"/>'+
+    '<path d="M143 51 L150 44 L157 51" fill="none" stroke="#FFAE22" stroke-width="1.5"/>'+
+    '<text x="150" y="36" fill="#FFAE22" font-size="10.5" font-family="Barlow" text-anchor="middle" font-weight="600">MIC PARA O SISTEMA</text>'+
+    '<text x="150" y="140" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">MESA OU CASE</text>',160)},
+ {t:'Meça uma fonte de cada vez',
+  d:'Ligue só a primeira e meça. Depois só a segunda e meça. O app subtrai os dois tempos — é isso que cancela a latência do celular e entrega o número certo.',
+  art:svg('<rect x="18" y="38" width="130" height="104" rx="5" fill="#191C21" stroke="#3CCB7F"/>'+
+    '<text x="83" y="64" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">1 · SÓ O PA</text>'+
+    spk(83,92,'')+
+    '<text x="83" y="126" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">a torre desligada</text>'+
+    '<rect x="172" y="38" width="130" height="104" rx="5" fill="#191C21" stroke="#3CCB7F"/>'+
+    '<text x="237" y="64" fill="#3CCB7F" font-size="11.5" font-family="Barlow" text-anchor="middle" font-weight="600">2 · SÓ A TORRE</text>'+
+    spk(237,92,'')+
+    '<text x="237" y="126" fill="#878C96" font-size="10.5" font-family="Barlow" text-anchor="middle">o PA desligado</text>',160)},
+ {t:'Sem Bluetooth, volume no máximo',
+  d:'Fone ou caixa Bluetooth adiciona atraso que muda sozinho e estraga a conta. Desconecte tudo antes de começar.',
+  art:svg('<circle cx="160" cy="88" r="46" fill="none" stroke="#E5484D" stroke-width="2"/>'+
+    '<path d="M128 56 L192 120" stroke="#E5484D" stroke-width="2"/>'+
+    '<path d="M150 66 L172 84 L160 94 V62 L172 72 L150 90" fill="none" stroke="#878C96" stroke-width="2" stroke-linejoin="round"/>'+
+    '<text x="160" y="158" fill="#878C96" font-size="11" font-family="Barlow" text-anchor="middle">BLUETOOTH DESCONECTADO</text>',175)}
+];
 
-function load(){
-  try{
-    const raw=localStorage.getItem('delay_events');
-    events=raw?JSON.parse(raw):[];
-  }catch(e){events=[]}
-}
-function save(){
-  try{localStorage.setItem('delay_events',JSON.stringify(events))}catch(e){}
-}
+// ══════════════════════ ESTADO ══════════════════════
+let events=[],curEv=null,curScen=null,resA=null,resB=null,curResult=null,tutI=0;
+const $=id=>document.getElementById(id);
+
+function load(){try{events=JSON.parse(localStorage.getItem('alinha_ev')||'[]')}catch(e){events=[]}}
+function save(){try{localStorage.setItem('alinha_ev',JSON.stringify(events))}catch(e){}}
+function seen(){try{return localStorage.getItem('alinha_tut')==='1'}catch(e){return false}}
+function markSeen(){try{localStorage.setItem('alinha_tut','1')}catch(e){}}
 
 function go(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-  window.scrollTo(0,0);
+  $(id).classList.add('on');window.scrollTo(0,0);
 }
-
-// ══════════════════════ TELAS ══════════════════════
-function renderEvents(){
-  const el=document.getElementById('evList');
-  if(!events.length){
-    el.innerHTML='<div class="card"><div class="d">Nenhum evento ainda.</div></div>';
-    return;
-  }
-  el.innerHTML=events.map((e,i)=>
-    '<div class="card" onclick="openEvent('+i+')"><div class="t">'+esc(e.name)+
-    '</div><div class="d">'+e.date+' · '+e.meas.length+' medição'+
-    (e.meas.length===1?'':'ões')+'</div></div>').join('');
-}
-
 function esc(s){return String(s).replace(/[<>&"]/g,c=>
   ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
 
-function newEvent(){
-  document.getElementById('evName').value='';
-  document.getElementById('errBox').textContent='';
-  go('pNew');
+// ══════════════════════ TUTORIAL ══════════════════════
+function showTut(i){
+  tutI=i;const s=TUT[i];
+  $('tutN').textContent=(i+1)+' de '+TUT.length;
+  $('tutBody').innerHTML='<div class="step"><div class="art">'+s.art+
+    '</div><div class="tx"><div class="t">'+s.t+'</div><div class="d">'+s.d+'</div></div></div>';
+  $('tutDots').innerHTML=TUT.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+  $('tutNext').textContent=i===TUT.length-1?'Começar':'Continuar';
+  go('pTut');
 }
+$('tutNext').addEventListener('click',()=>{
+  if(tutI<TUT.length-1)showTut(tutI+1);
+  else{markSeen();go('pHome')}
+});
+$('tutSkip').addEventListener('click',()=>{markSeen();go('pHome')});
+$('btnTut').addEventListener('click',()=>showTut(0));
+
+// ══════════════════════ EVENTOS ══════════════════════
+function renderEvents(){
+  const el=$('evList');
+  if(!events.length){
+    el.innerHTML='<div class="pnl"><div class="d">Nada aqui ainda. Crie um evento para começar a medir.</div></div>';
+    return;
+  }
+  el.innerHTML=events.map((e,i)=>
+    '<div class="pnl tap" data-ev="'+i+'"><div class="t">'+esc(e.name)+'</div>'+
+    '<div class="d">'+e.date+' · '+e.meas.length+
+    (e.meas.length===1?' medição':' medições')+'</div></div>').join('');
+  el.querySelectorAll('[data-ev]').forEach(n=>
+    n.addEventListener('click',()=>openEvent(+n.dataset.ev)));
+}
+
+$('btnNew').addEventListener('click',()=>{
+  $('evName').value='';$('errBox').textContent='';go('pNew')});
 
 function createEvent(){
   try{
-    const inp=document.getElementById('evName');
-    const d=new Date();
-    const dstr=String(d.getDate()).padStart(2,'0')+'/'+
-               String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
-    const n=(inp.value||'').trim()||('Evento '+dstr);
+    const inp=$('evName'),d=new Date();
+    const ds=String(d.getDate()).padStart(2,'0')+'/'+
+      String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+    const n=(inp.value||'').trim()||('Evento '+ds);
     inp.blur();
-    events.unshift({name:n,date:dstr,meas:[]});
+    events.unshift({name:n,date:ds,meas:[]});
     save();renderEvents();openEvent(0);
-  }catch(err){
-    document.getElementById('errBox').textContent='Erro: '+err.message;
-  }
+  }catch(err){$('errBox').textContent='Erro: '+err.message}
 }
-
-// no iOS o primeiro toque so fecha o teclado; touchend garante o disparo
 (function(){
-  const b=document.getElementById('createBtn');
+  const b=$('btnCreate');
   b.addEventListener('click',createEvent);
-  b.addEventListener('touchend',function(ev){ev.preventDefault();createEvent()});
-  document.getElementById('evName').addEventListener('keydown',function(ev){
-    if(ev.key==='Enter'){ev.preventDefault();createEvent()}
-  });
+  b.addEventListener('touchend',e=>{e.preventDefault();createEvent()});
+  $('evName').addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();createEvent()}});
 })();
 
 function openEvent(i){
-  curEv=i;
-  const e=events[i];
-  document.getElementById('evTitle').textContent=e.name;
-  document.getElementById('scenList').innerHTML=
-    Object.keys(SCENARIOS).map(k=>{
-      const s=SCENARIOS[k];
-      return '<div class="card" onclick="startMeas(\''+k+'\')"><div class="t">'+
-        s.t+'</div><div class="d">'+s.d+'</div></div>';
-    }).join('');
-  renderMeas();
-  go('pEvent');
+  curEv=i;const e=events[i];
+  $('evTitle').textContent=e.name;
+  $('scenList').innerHTML=Object.keys(SCEN).map(k=>{
+    const s=SCEN[k];
+    return '<div class="pnl tap" data-sc="'+k+'"><div class="t">'+s.t+
+      '</div><div class="d">'+s.d+'</div></div>';
+  }).join('');
+  $('scenList').querySelectorAll('[data-sc]').forEach(n=>
+    n.addEventListener('click',()=>showPos(n.dataset.sc)));
+  renderMeas();go('pEvent');
 }
 
 function renderMeas(){
-  const e=events[curEv],el=document.getElementById('mList');
+  const e=events[curEv],el=$('mList');
   if(!e.meas.length){
-    el.innerHTML='<div class="card"><div class="d">Nada medido ainda.</div></div>';
+    el.innerHTML='<div class="pnl"><div class="d">Escolha acima o que quer alinhar.</div></div>';
     return;
   }
   el.innerHTML=e.meas.map(m=>
-    '<div class="card"><div class="t">'+m.ms.toFixed(2)+' ms no '+esc(m.applyTo)+
+    '<div class="pnl"><div class="t">'+m.ms.toFixed(2)+' ms no '+esc(m.applyTo)+
     '</div><div class="d">'+esc(m.scen)+' · '+m.meters.toFixed(2)+' m · '+
     m.feet.toFixed(1)+' ft'+(m.weak?' · medição fraca':'')+'</div></div>').join('');
 }
 
-function deleteEvent(){
-  events.splice(curEv,1);save();renderEvents();go('pHome');
+$('btnDel').addEventListener('click',()=>{
+  events.splice(curEv,1);save();renderEvents();go('pHome')});
+
+// ══════════════════════ POSIÇÃO ══════════════════════
+function showPos(k){
+  curScen=k;const s=SCEN[k];
+  $('posH').textContent=s.t;
+  $('posArt').innerHTML=s.art;
+  $('posT').textContent=s.pos;
+  $('posD').textContent=s.posd;
+  $('posFlag').textContent='Mic do celular virado para o sistema. '+
+    'Bluetooth desconectado. Celular apoiado, não na mão.';
+  go('pPos');
 }
+$('btnPosGo').addEventListener('click',()=>startMeas(curScen));
 
 // ══════════════════════ ÁUDIO ══════════════════════
-let ctx=null,stream=null,proc=null,micNode=null;
+let ctx=null,stream=null,proc=null,micNode=null,unlockEl=null;
 let ring=null,ringSize=0,writePos=0,filled=0,totalSamples=0;
-let refTime=0,refSample=0;
-let motionOK=true,motionVar=0,motionWatch=false;
-
+let refTime=0,refSample=0,liveRms=0;
+let motionOK=true,busy=false;
 const RING_SEC=6;
 
 function tinyWav(){
@@ -380,8 +559,6 @@ function tinyWav(){
   for(let i=0;i<u.length;i++)b+=String.fromCharCode(u[i]);
   return 'data:audio/wav;base64,'+btoa(b);
 }
-
-let unlockEl=null;
 function unlockAudio(){
   if(!unlockEl){
     unlockEl=document.createElement('audio');
@@ -391,7 +568,6 @@ function unlockAudio(){
   }
   const p=unlockEl.play();if(p&&p.catch)p.catch(()=>{});
 }
-
 async function openMic(){
   if(ctx)return;
   unlockAudio();
@@ -403,70 +579,74 @@ async function openMic(){
   const fs=ctx.sampleRate;
   ringSize=Math.round(fs*RING_SEC);
   ring=new Float32Array(ringSize);writePos=0;filled=0;totalSamples=0;
-
   micNode=ctx.createMediaStreamSource(stream);
   proc=ctx.createScriptProcessor(4096,1,1);
   proc.onaudioprocess=e=>{
     const d=e.inputBuffer.getChannelData(0);
-    for(let i=0;i<d.length;i++){ring[writePos]=d[i];writePos=(writePos+1)%ringSize}
+    let s=0;
+    for(let i=0;i<d.length;i++){ring[writePos]=d[i];writePos=(writePos+1)%ringSize;s+=d[i]*d[i]}
+    liveRms=Math.sqrt(s/d.length);
     totalSamples+=d.length;filled=Math.min(filled+d.length,ringSize);
-    // âncora: liga índice de amostra ao relógio do contexto
     refSample=totalSamples;refTime=ctx.currentTime;
   };
   const mute=ctx.createGain();mute.gain.value=0;
   micNode.connect(proc).connect(mute).connect(ctx.destination);
+  startMeter();
 }
-
 function closeMic(){
+  stopMeter();stopMotion();
   try{if(proc)proc.disconnect()}catch(e){}
   try{if(micNode)micNode.disconnect()}catch(e){}
   try{if(stream)stream.getTracks().forEach(t=>t.stop())}catch(e){}
   try{if(unlockEl)unlockEl.pause()}catch(e){}
   if(ctx){try{ctx.close()}catch(e){}}
   ctx=stream=proc=micNode=null;ring=null;
-  stopMotion();
 }
-
 function readRange(fromAbs,len){
-  const out=new Float32Array(len);
   const back=totalSamples-fromAbs;
   if(back<=0||back>ringSize)return null;
+  const out=new Float32Array(len);
   let p=(writePos-back+ringSize*2)%ringSize;
   for(let i=0;i<len;i++){out[i]=ring[p];p=(p+1)%ringSize}
   return out;
 }
 
-// ─── sensor de movimento ───
+// ── medidor de nível ──
+let meterT=null;
+function buildMeter(){
+  $('meter').innerHTML=Array.from({length:22},()=>'<i></i>').join('');
+}
+function startMeter(){
+  buildMeter();
+  const bars=$('meter').querySelectorAll('i');
+  meterT=setInterval(()=>{
+    const db=20*Math.log10(liveRms||1e-6);
+    const n=Math.max(0,Math.min(22,Math.round((db+60)/60*22)));
+    bars.forEach((b,i)=>{b.className=i<n?(i>18?'pk':'on'):''});
+  },90);
+}
+function stopMeter(){if(meterT){clearInterval(meterT);meterT=null}
+  const m=$('meter');if(m)m.innerHTML=''}
+
+// ── movimento ──
 function startMotion(){
-  motionOK=true;motionVar=0;
+  motionOK=true;
   if(typeof DeviceMotionEvent==='undefined')return;
   const h=e=>{
-    const a=e.accelerationIncludingGravity;
-    if(!a)return;
+    const a=e.accelerationIncludingGravity;if(!a)return;
     const m=Math.hypot(a.x||0,a.y||0,a.z||0);
-    if(window._lastM!==undefined){
-      const d=Math.abs(m-window._lastM);
-      motionVar=motionVar*.9+d*.1;
-      if(d>1.2)motionOK=false;
-    }
-    window._lastM=m;
+    if(window._lm!==undefined&&Math.abs(m-window._lm)>1.2)motionOK=false;
+    window._lm=m;
   };
-  window._motionH=h;window.addEventListener('devicemotion',h);
-  motionWatch=true;
+  window._mh=h;window.addEventListener('devicemotion',h);
 }
-function stopMotion(){
-  if(window._motionH)window.removeEventListener('devicemotion',window._motionH);
-  motionWatch=false;
-}
+function stopMotion(){if(window._mh)window.removeEventListener('devicemotion',window._mh)}
 async function askMotion(){
-  try{
-    if(typeof DeviceMotionEvent!=='undefined'&&DeviceMotionEvent.requestPermission){
-      await DeviceMotionEvent.requestPermission();
-    }
-  }catch(e){}
+  try{if(typeof DeviceMotionEvent!=='undefined'&&DeviceMotionEvent.requestPermission)
+    await DeviceMotionEvent.requestPermission()}catch(e){}
 }
 
-// ─── uma passada ───
+// ── uma passada ──
 function playAndCapture(band){
   return new Promise(resolve=>{
     const fs=ctx.sampleRate;
@@ -476,14 +656,10 @@ function playAndCapture(band){
     const src=ctx.createBufferSource();src.buffer=buf;
     const g=ctx.createGain();g.gain.value=.95;
     src.connect(g).connect(ctx.destination);
-
     const playAt=ctx.currentTime+.3;
     src.start(playAt);
-
-    // índice absoluto estimado do instante de disparo
     const startAbs=Math.round(refSample+(playAt-refTime)*fs);
     const capLen=Math.round(fs*(SWEEP_D+.55));
-
     setTimeout(()=>{
       const rec=readRange(startAbs,capLen);
       if(!rec){resolve(null);return}
@@ -502,171 +678,145 @@ function playAndCapture(band){
         ss+=env[i]*env[i];cnt++;
       }
       const noise=cnt?Math.sqrt(ss/cnt):1e-12;
-      const conf=20*Math.log10(pv/(noise||1e-12));
-      let rms=0;for(let i=0;i<rec.length;i++)rms+=rec[i]*rec[i];
-      rms=Math.sqrt(rms/rec.length);
-      resolve({ms:(refine(env,pi)/fs)*1000,conf,rms,
-               polarity:win[pi]>=0?'+':'-'});
+      resolve({ms:(refine(env,pi)/fs)*1000,
+        conf:20*Math.log10(pv/(noise||1e-12)),
+        polarity:win[pi]>=0?'+':'-'});
     },(SWEEP_D+.95)*1000);
   });
 }
 
-// ─── medir uma fonte ───
+// ── medir uma fonte ──
 async function measureSource(which){
-  const scen=SCENARIOS[curScen];
-  const band=which==='A'?scen.ba:scen.bb;
-  const name=which==='A'?scen.a:scen.b;
-  const st=document.getElementById('mStatus');
-  const el=document.getElementById(which==='A'?'srcA':'srcB');
-  const msg=document.getElementById(which==='A'?'msgA':'msgB');
-  const res=document.getElementById(which==='A'?'resA':'resB');
-  const prog=document.getElementById('prog');
+  if(busy)return;
+  const s=SCEN[curScen];
+  const band=which==='A'?s.ba:s.bb;
+  const name=which==='A'?s.a:s.b;
+  const st=$('mStatus'),ch=$(which==='A'?'chA':'chB');
+  const msg=$(which==='A'?'msgA':'msgB'),res=$(which==='A'?'resA':'resB');
 
-  setBusy(true);
+  busy=true;ch.classList.add('live');
   try{
     if(!ctx){
-      st.innerHTML='<span class="dot"></span>Abrindo microfone…';
-      await askMotion();
-      await openMic();
-      startMotion();
+      st.innerHTML='<span class="blink"></span>Abrindo microfone';
+      await askMotion();await openMic();startMotion();
       await new Promise(r=>setTimeout(r,900));
     }
   }catch(e){
-    st.textContent='Sem acesso ao microfone: '+e.message;
-    setBusy(false);return;
+    st.textContent='Sem acesso ao microfone. Permita nos ajustes do site.';
+    busy=false;ch.classList.remove('live');return;
   }
 
   const runs=[];
   for(let i=1;i<=PASSES;i++){
     motionOK=true;
-    st.innerHTML='<span class="dot"></span>Medindo '+name+' — passada '+i+' de '+PASSES;
-    prog.style.width=((i-1)/PASSES*100)+'%';
+    st.innerHTML='<span class="blink"></span>Medindo <b>'+name+'</b> · passada '+i+'/'+PASSES;
     const r=await playAndCapture(band);
     if(r){r.moved=!motionOK;runs.push(r)}
     await new Promise(r=>setTimeout(r,250));
   }
-  prog.style.width='100%';
 
   const still=runs.filter(r=>!r.moved);
   const pool=still.length>=2?still:runs;
   const good=pool.filter(r=>r.conf>=CONF_MIN);
   const use=good.length>=2?good:pool;
+  ch.classList.remove('live');
 
   if(!use.length){
-    msg.textContent='Falhou. Tente de novo.';setBusy(false);return;
+    msg.textContent='Não captou. Aumente o nível e tente de novo.';
+    st.textContent='Toque na fonte para repetir.';busy=false;return;
   }
 
   const ms=median(use.map(r=>r.ms));
   const sp=Math.max(...use.map(r=>r.ms))-Math.min(...use.map(r=>r.ms));
-  const conf=use.reduce((s,r)=>s+r.conf,0)/use.length;
+  const conf=use.reduce((a,r)=>a+r.conf,0)/use.length;
   const moved=runs.some(r=>r.moved);
-
-  const out={ms,spread:sp,conf,n:use.length,moved,
+  const out={ms,spread:sp,conf,moved,
     polarity:use.filter(r=>r.polarity==='-').length>use.length/2?'-':'+'};
   if(which==='A')resA=out;else resB=out;
 
-  el.classList.add('done');
-  res.textContent=ms.toFixed(2)+' ms';
-  msg.textContent=conf.toFixed(0)+' dB · dispersão '+sp.toFixed(2)+' ms'+
-    (moved?' · houve movimento':'');
-
-  st.textContent=(resA&&resB)?'Pronto. Toque em Calcular delay.'
-    :'Agora ligue só a outra fonte e meça ela.';
-  document.getElementById('calcBtn').disabled=!(resA&&resB);
-  prog.style.width='0%';
-  setBusy(false);
+  ch.classList.add('set');
+  res.textContent=ms.toFixed(2);
+  msg.textContent=conf.toFixed(0)+' dB · variação '+sp.toFixed(2)+' ms'+
+    (moved?' · o celular mexeu':'');
+  st.innerHTML=(resA&&resB)?'Pronto.'
+    :'Agora ligue só <b>'+(which==='A'?s.b:s.a)+'</b> e meça.';
+  $('btnCalc').disabled=!(resA&&resB);
+  busy=false;
 }
-
-let busy=false;
-function setBusy(b){
-  busy=b;
-  document.getElementById('srcA').style.opacity=b?.5:1;
-  document.getElementById('srcB').style.opacity=b?.5:1;
-}
+$('chA').addEventListener('click',()=>measureSource('A'));
+$('chB').addEventListener('click',()=>measureSource('B'));
 
 // ══════════════════════ FLUXO ══════════════════════
-function startMeas(key){
-  curScen=key;resA=resB=null;
-  const s=SCENARIOS[key];
-  document.getElementById('mTitle').textContent=s.t;
-  document.getElementById('nameA').textContent=s.a;
-  document.getElementById('nameB').textContent=s.b;
-  document.getElementById('resA').textContent='—';
-  document.getElementById('resB').textContent='—';
-  document.getElementById('msgA').textContent='Toque para medir';
-  document.getElementById('msgB').textContent='Toque para medir';
-  document.getElementById('srcA').classList.remove('done');
-  document.getElementById('srcB').classList.remove('done');
-  document.getElementById('calcBtn').disabled=true;
-  document.getElementById('mStatus').textContent=
-    s.d+'. Ligue só '+s.a+' e toque nela acima.';
-  go('pMeas');
+function startMeas(k){
+  curScen=k;resA=resB=null;
+  const s=SCEN[k];
+  $('mTitle').textContent=s.t;
+  $('nameA').textContent=s.a;$('nameB').textContent=s.b;
+  $('resA').textContent='– – –';$('resB').textContent='– – –';
+  $('msgA').textContent='Toque para medir';$('msgB').textContent='Toque para medir';
+  $('chA').className='ch';$('chB').className='ch';
+  $('btnCalc').disabled=true;
+  $('mStatus').innerHTML='Ligue só <b>'+s.a+'</b> e toque nela acima.';
+  buildMeter();go('pMeas');
 }
+function abort(){closeMic();go('pEvent')}
+$('btnAbort').addEventListener('click',abort);
+$('btnAbort2').addEventListener('click',abort);
 
-document.getElementById('srcA').addEventListener('click',()=>{
-  if(!busy)measureSource('A')});
-document.getElementById('srcB').addEventListener('click',()=>{
-  if(!busy)measureSource('B')});
-
-function abortMeas(){closeMic();go('pEvent')}
-
-function finishMeas(){
-  const s=SCENARIOS[curScen];
+$('btnCalc').addEventListener('click',()=>{
+  const s=SCEN[curScen];
   const diff=resA.ms-resB.ms;
-  // quem chega depois está mais longe; o delay entra em quem chega antes
   const applyTo=diff>0?s.b:s.a;
   const amount=Math.abs(diff);
-  const meters=(amount/1000)*SOUND;
-  const feet=meters*3.28084;
+  const meters=(amount/1000)*SOUND,feet=meters*3.28084;
   const conf=Math.min(resA.conf,resB.conf);
   const spread=Math.max(resA.spread,resB.spread);
   const weak=conf<CONF_MIN||spread>1.5;
 
-  curResult={ms:amount,applyTo,meters,feet,conf,spread,weak,
-    scen:s.t,polA:resA.polarity,polB:resB.polarity};
+  curResult={ms:amount,applyTo,meters,feet,conf,spread,weak,scen:s.t};
 
-  document.getElementById('rMs').innerHTML=amount.toFixed(2)+'<small>ms</small>';
-  document.getElementById('rApply').textContent='aplique em '+applyTo;
-  document.getElementById('rEquiv').textContent=
-    meters.toFixed(2)+' m · '+feet.toFixed(1)+' ft';
+  $('rMs').innerHTML=amount.toFixed(2)+'<u>ms</u>';
+  $('rApply').textContent='aplique no '+applyTo;
+  $('rEquiv').textContent=meters.toFixed(2)+' m  ·  '+feet.toFixed(1)+' ft';
+  stat('sA',s.a,resA.ms.toFixed(1)+' ms');
+  stat('sB',s.b,resB.ms.toFixed(1)+' ms');
+  stat('sConf','Confiança',conf.toFixed(0)+' dB',conf<CONF_MIN);
+  stat('sSpread','Dispersão',spread.toFixed(2)+' ms',spread>1.5);
 
-  setStat('sA',s.a,resA.ms.toFixed(1)+' ms');
-  setStat('sB',s.b,resB.ms.toFixed(1)+' ms');
-  setStat('sConf','Confiança',conf.toFixed(0)+' dB',conf<CONF_MIN);
-  setStat('sSpread','Dispersão',spread.toFixed(2)+' ms',spread>1.5);
-
-  const w=document.getElementById('rWarn');
+  const w=$('rWarn');
   if(weak){
     w.style.display='block';
-    w.textContent='Medição fraca. Aumente o nível da fonte, procure um ponto '+
-      'com menos reflexão e repita antes de usar este valor.';
+    w.textContent='Medição fraca. Aumente o nível da fonte ou procure um ponto com menos reflexão, e meça de novo antes de usar esse valor.';
   }else w.style.display='none';
 
-  document.getElementById('rNote').textContent=
-    'Medido a partir da sua posição. Vale para este ponto. '+
-    'Polaridade relativa: '+(resA.polarity===resB.polarity?'igual':'invertida entre si')+'.';
-
+  $('rNote').textContent='Medido da sua posição — vale para este ponto. '+
+    'Polaridade relativa: '+(resA.polarity===resB.polarity?'igual nas duas fontes.':'invertida entre as duas.');
   go('pRes');
-}
+});
 
-function setStat(id,k,v,bad){
-  const e=document.getElementById(id);
+function stat(id,k,v,bad){
+  const e=$(id);
   e.querySelector('.k').textContent=k;
   e.querySelector('.v').textContent=v;
-  e.className='stat'+(bad?' bad':'');
+  e.className=bad?'bad':'';
 }
 
-function saveResult(){
+$('btnSave').addEventListener('click',()=>{
   events[curEv].meas.unshift(curResult);
   save();closeMic();renderMeas();renderEvents();go('pEvent');
-}
+});
+$('btnDiscard').addEventListener('click',()=>{closeMic();go('pEvent')});
+
+document.querySelectorAll('[data-go]').forEach(n=>
+  n.addEventListener('click',()=>go(n.dataset.go)));
 
 // ══════════════════════ INIT ══════════════════════
-window.addEventListener('error',function(e){
-  const b=document.getElementById('errBox');
-  if(b)b.textContent='Erro: '+e.message+' (linha '+e.lineno+')';
+window.addEventListener('error',e=>{
+  const b=$('errBox');if(b)b.textContent='Erro: '+e.message+' (linha '+e.lineno+')';
 });
 load();renderEvents();
+go(seen()?'pHome':'pTut');
+if(!seen())showTut(0);
 window.addEventListener('pagehide',closeMic);
 </script>
 </body>
